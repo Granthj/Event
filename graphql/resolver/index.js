@@ -283,7 +283,7 @@ adminLogin:async ({email,password})=>{
     const user = await User.findOne({email:email});
     console.log("ID",user.id)
     if(!user)
-        throw Error("Invalid Admin");
+        throw Error("Invalidd Admin");
     const isEqual = await bcrypt.compare(password,user.password);
     if(!isEqual) throw Error("Invalid admin password");
     const token = jwt.sign({UserId:user.id,email:user.email},"GootAdmin",{
