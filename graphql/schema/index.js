@@ -2,10 +2,22 @@ const { buildSchema } = require('graphql');
 module.exports = buildSchema(`
         type customer{
             _id:ID!
-            name:String!
+            firstname:String!
+            lastname:String!
+            dob:String!
+            gender:String!
             email:String!
             password:String
             createEvent:[event!]
+        }
+        type cart{
+            _id:ID!
+            eventId:ID!
+            customerId:ID!
+            title:String!
+            price:Int!
+            desc:String!
+            date:String!
         }
         type event{
             _id:ID!
@@ -74,9 +86,20 @@ module.exports = buildSchema(`
             eventId:ID!
         }
         input inputCustomer{
-            name:String!
+            firstname:String!
+            lastname:String!
+            dob:String!
+            gender:String!
             email:String!
             password:String!
+        }
+        input bookedEvent{
+            eventId:ID!
+            customerId:ID!
+        }
+        input inputCart{
+            eventId:ID!
+            customerId:ID!
         }
         type RootQuery{
            customerr:[customer!]!
@@ -92,9 +115,10 @@ module.exports = buildSchema(`
             createEvent(eventInput:inputEvent):event
             createUser(userInput:inputUser):user
             createCustomer(customerInput:inputCustomer):customer
-            addBooking(eventId:ID!):booking
+            addBooking(createBooking:bookedEvent):booking
             cancelBooking(bookingId:ID!):booking
             paymentGateway(eventId:ID!):paymentOrder
+            cartEvent(cartInput:inputCart):cart
         }
 
         schema {

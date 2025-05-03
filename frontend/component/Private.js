@@ -11,17 +11,17 @@ import EventsPage from "./Events";
 
 
 const Private = ({path})=>{
-    const {tokenData,setTokenData} = useContext(AuthContext);
+    const {token,customerId} = useContext(AuthContext);
     const {admintokenData,setAdminTokenData} = useContext(AdminAuthContext);
-    console.log("Private in",tokenData,path,admintokenData)
+    console.log("Private in",token,path,admintokenData)
     if(path === "/auth"){
         console.log(path)
         return(
-        tokenData?<Auth/>:<Error/>
+            token?<Auth/>:<Error/>
     )
     }
     else if(path === "/bookings"){
-        return tokenData?<YourBooking/>:<Error/>
+        return token?<YourBooking/>:<Error/>
     }
     else if(path == 'dashboard'){
         return(
@@ -30,7 +30,7 @@ const Private = ({path})=>{
     }
     else if(path == '/events'){
         return(
-            tokenData?<EventsPage/>:<Error/>
+            token?<EventsPage/>:<Error/>
         )
     }
 }

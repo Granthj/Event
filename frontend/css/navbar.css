@@ -6,12 +6,16 @@
     background-color: aqua;
     overflow: hidden;
 }
-#ul_nav{
+/* #custom-navbar{
     display: flex;
-    text-align: left;
-    padding: 1px 1px;
+    
     float: right;
 }
+#custom-navbar-item{
+    display: flex;
+    justify-content: space-between;
+    float: right;
+} */
 #ul_nav > li{
     margin-left:20px;
     margin-right:30px;
@@ -23,4 +27,7 @@
 }
 #ul_nav a:hover{
     color: blueviolet;
+}
+#navbar{
+    color:#c5aa6a
 }
