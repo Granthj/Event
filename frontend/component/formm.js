@@ -1,58 +1,81 @@
-import react, { useRef, useState , useContext} from 'react';
-import {AuthContext} from '../utils/authContext';
+import react, { useRef, useState, useContext } from 'react';
+import { AuthContext } from '../utils/authContext';
 import { useNavigate } from 'react-router-dom';
-import { BrowserRouter,Routes,Route } from 'react-router-dom';
+import '../css/form.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Auth from '../component/Auth';
 import { cancelBooking } from '../../graphql/resolver';
 
-
-const Form = ()=>{
-    const [nameState,setnameState] = useState();
-    const [emailState,setemailState] = useState();
-    const [passState,setpassState] = useState();
-    const [login,loginState] = useState(true);
-    const [token,setToken] = useState();
-    const [file,setFile] = useState();
-    const [imageUrl,setImageUrl] = useState(null);
-    const {tokenData, setTokenData} = useContext(AuthContext);
+const Form = () => {
+    const [firstnameState, setfirstnameState] = useState();
+    const [lastnameState, setlastnameState] = useState();
+    const [dobState, setdobState] = useState();
+    const [genderState, setgenderState] = useState('');
+    const [emailState, setemailState] = useState();
+    const [passState, setpassState] = useState();
+    const [login, loginState] = useState(true);
+    const [token, setToken] = useState();
+    const [file, setFile] = useState();
+    const [imageUrl, setImageUrl] = useState(null);
+    const { setAuthData } = useContext(AuthContext);
+    const referenceMale = useRef(null);
+    const referenceFemale = useRef(null);
     const navigate = useNavigate();
     const inputFile = useRef(null);
     let val;
-    if(token!==undefined){
+    if (token !== undefined) {
         val = true;
     }
-    const switchModeHandler = ()=>{
-        if(login === true){
+    const switchModeHandler = () => {
+        if (login === true) {
             return loginState(false);
         }
         return loginState(true);
     }
-    const setInputHandler = ()=>{
+    const setInputHandler = () => {
         inputFile.current.click();
     }
-    const imageSelector = (event)=>{
+    const imageSelector = (event) => {
         setFile(event.target.files[0]);
         setImageUrl(URL.createObjectURL(event.target.files[0]));
+
+    }
+    const handleCheckBox =(value)=>{
+       
+        if(value === 'male'){
+            referenceMale.current.checked = true;
+            referenceFemale.current.checked = false;
+            setgenderState(value);
+        }
+        else{
+            referenceMale.current.checked = false;
+            referenceFemale.current.checked = true;
+            setgenderState(value);
+        }
         
     }
-
-    const submit = (e)=>{
+    const submit = (e) => {
         e.preventDefault();
-        console.log("in submit",nameState,emailState,passState);
-    
+        // console.log("in submit",nameState,emailState,passState);
+        console.log("in submit", firstnameState, lastnameState, dobState, genderState, emailState, passState);
+
         // if(emailState.trim().length === 0 || passState.trim().length === 0)
         //     return;
         let query;
-        query=login?{
-            query:`
+        query = login ? {
+            query: `
                 mutation{
-                    createCustomer(customerInput:{name:"${nameState},"email:"${emailState}",password:"${passState}"}){
+                    createCustomer(customerInput:{firstname:"${firstnameState}",lastname:"${lastnameState}",dob:"${dobState}",gender:"${genderState}",email:"${emailState}",password:"${passState}"}){
                         _id
                         email
+                        firstname
+                        lastname
+                        dob
+                        gender
                     }
                 }
-        `}:{
-            query:`
+        `} : {
+            query: `
                 query{
                     login(email:"${emailState}"password:"${passState}"){
                         CustomerId
@@ -62,56 +85,86 @@ const Form = ()=>{
                 }
             `
         }
-        
-        fetch('http://localhost:7000/graphql',{
-            method:'POST',
-            body:JSON.stringify(query),
-            headers:{
-                'Content-Type':'application/json'
+
+        fetch('http://localhost:7000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(query),
+            headers: {
+                'Content-Type': 'application/json'
             }
-        }).then(response=>{
+        }).then(response => {
             return response.json();
-        }).then(data=>{
-            console.log(data,"granth")
-            if(!login){
-                setTokenData(data.data.login.token);
-                if(data.data.login.token){
-                   
-                    // navigate('/auth');
-                    console.log(data.data.login.token)
-                    return;
-                }
+        }).then(data => {
+            console.log(data, "granth")
+            if (!login) {
+                // setTokenData(data.data.login);
+                console.log(data.data.login.token, "GHUIOP")
+                setAuthData.setAuthData(data.data.login.token, data.data.login.CustomerId);
+                // localStorage.setItem('token',data.data.login.token);
+                localStorage.setItem('customerId', data.data.login.CustomerId);
+                return;
+                // if(data.data.login.token){
+
+                // navigate('/auth');
+                // }
             }
             // setToken(data.createCustomer._id);
         })
-      
-       
-    }
-    const customStyle = {
-        marginTop:"20px",
-        marginRight:"10px",
-        marginLeft:"100px"
+
 
     }
-    return(
+    return (
         <>
-        {login?<h1>Create Your Account</h1>:<h1>Log In</h1>}
-        <div style={{width:"400px", height:"300px",border:"2px solid black",marginLeft:"540px",marginTop:"50px",backgroundColor:"orange"}}>
-            <div>
-            {/* {imageUrl?<img src={imageUrl} style={{borderRadius:"100%",border:"2px solid black", marginLeft:"95px",marginTop:"10px"}} onClick={setInputHandler} >
-            </img>:
-                <img src={require('../../image/dp.jpg')} style={{borderRadius:"100%",border:"2px solid black", marginLeft:"95px",marginTop:"10px"}} onClick={setInputHandler} >
-                </img>} */}
-                <input type="file" name="file" accept='image/*' ref={inputFile} onChange={imageSelector} style={{display:"none"}}></input>
-            </div>    
-            <form onSubmit={submit}>
-                {login && <input type="name"placeholder="Enter Your Name" name="name" style={customStyle} onChange={(e)=>{setnameState(e.target.value)}}></input>}
-                <input type="email" placeholder='Email' name="email" style={customStyle} onChange={(e)=>{setemailState(e.target.value)}}></input>
-                <input type="password" placeholder='Password' name="pass" style={customStyle} onChange={(e)=>{setpassState(e.target.value)}}></input>
-                <button type="submit">Click</button>
-            </form>
-                <button type="submit" style={customStyle} className='btn btn-primary' onClick={switchModeHandler}>Switch To {login?'SignUp':'Login'}</button>
-        </div>
+            {login ? <h1>Create Your Account</h1> : <h1>Log In</h1>}
+                <div className="container mt-5 custom-container w-25">
+    
+                    <form onSubmit={submit} >
+                        {login && (
+                            <>  <div className="mb-2">
+                                <label htmlFor="firstname" className="form-label">First Name</label>
+                                <br></br>
+                                <input type="firstname" placeholder="Enter Your First Name" name="firstname" className="form-control w-100" onChange={(e) => { setfirstnameState(e.target.value) }}></input>
+                            </div>
+                                <div className='mb-3'>
+                                    <label htmlFor="lastname" className="form-label">Last Name</label>
+                                    <input type="lastname" placeholder="Enter Your Last Name" name="lastname" className="form-control w-100" onChange={(e) => { setlastnameState(e.target.value) }}></input>
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="dob" className="form-label">Date of Birth</label>
+                                    <input type="date" placeholder="Enter Your Date of Birth" name="dob" className="form-control w-100"  onChange={(e) => { setdobState(e.target.value) }}></input>
+                                </div>
+                                {/* <br></br> */}
+                                <div className="mb-2 row align-items-center">
+                                    <label className="col-sm-4 col-form-label">Gender</label>
+                                        <br></br>
+                                    <div className="col-sm-10">
+                                        <input type="checkbox" className="form-check-input" name="gender" value="male" ref={referenceMale} onChange={(e)=>handleCheckBox(e.target.value) }></input>
+                                        <label className="form-check-label" htmlFor='male'>Male</label>
+                                    </div>
+                                    <div className="col-sm-10">
+                                        <input type="checkbox" className="form-check-input" name="gender" value="female" ref={referenceFemale} onChange={(e)=>handleCheckBox(e.target.value)}></input>
+                                        <label className="form-check-label" htmlFor='female'>Female</label>
+                                    </div>
+                                </div>
+
+                            </>
+                        )}
+                        <div className="mb-3">
+                            <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
+                            <input type="email" placeholder='Email' name="email" className="form-control w-100" aria-describedby="emailHelp"  onChange={(e) => { setemailState(e.target.value) }}></input>
+                            <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+                        </div>
+                        <div className='mb-3'>
+                            <input type="password" placeholder='Password' name="pass" className="form-control w-100" onChange={(e) => { setpassState(e.target.value) }}></input>
+                        </div>
+                        <div className='text-center'>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                    <div className='text-center'>
+                        <button type="submit" className='btn btn-secondry' onClick={switchModeHandler}>Switch To {login ? 'Login' : 'SignUp'}</button>
+                    </div>
+                </div>
         </>
     )
 }

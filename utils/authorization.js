@@ -17,6 +17,7 @@ module.exports = (req,res,next)=>{
     let decodeToken;
     try{
         decodeToken = jwt.verify(token,'Iamgood');
+        console.log('ALL GOOD')
     } catch{
         console.log("3 error")
         req.auth = false;
@@ -27,7 +28,7 @@ module.exports = (req,res,next)=>{
         req.auth = false;
         return next();
     }
-    // console.log("custId");
+    console.log("CHAL GYA");
     req.auth = true;
     req.customerId = decodeToken.customerId;
     req.email = decodeToken.email;

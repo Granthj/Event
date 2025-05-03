@@ -14,9 +14,9 @@ const Eventitem = (props)=>{
     const [book,paymentBook] = useState(false);
     const [eventBooked,setEventBooked] = useState();
     const {paymentId,setpaymentId} = useContext(PaymentContext);
-    const { tokenData } = useContext(AuthContext);
+    const { token,customerId } = useContext(AuthContext);
     // const [variable,setVariable] = useState(true);
-    // console.log(props.events,"idfgj")
+    // console.log(paymentId,"PaymentID")
     let queryForEvent;
     const closeModalHandler = ()=>{
         setInfo(false);
@@ -36,7 +36,7 @@ const Eventitem = (props)=>{
         body: JSON.stringify(queryForCustomer),
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': "Bearer" + " " + tokenData
+            'Authorization': "Bearer" + " " + token
         }
     }).then(response => {
         // if(response.status !== 200 && response.status !== 201) throw new Error('Failed');
@@ -57,7 +57,7 @@ const Eventitem = (props)=>{
             queryForEvent = {
                 query:`
                 mutation{
-                    addBooking(eventId:"${eventId}"){
+                    addBooking(createBooking:{eventId:"${eventId}",customerId:"${customerId}"}){
                         _id
                         createdAt
                         
@@ -76,7 +76,7 @@ const Eventitem = (props)=>{
                 body: JSON.stringify(queryForEvent),
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': "Bearer" + " " + tokenData
+                    'Authorization': "Bearer" + " " + token
                 }
             }).then(response => {
                 return response.json();

@@ -1,4 +1,6 @@
 import {useState, useContext, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import ReactDom from 'react-dom/client';
 import Navbar from './component/navbar.js';
 import Form from './component/formm.js';
@@ -19,7 +21,6 @@ import CustomersList from './component/Customers.js';
 import Eventitem from './component/Eventitem.js';
 import PaymentGateway from './component/PaymentGateway.js';
 import { PaymentProvider,PaymentContext } from './utils/paymentId.js';
-let val = false;
 const AdminPanel = ()=>{
     return(
         <>
@@ -34,7 +35,8 @@ const AdminPanel = ()=>{
     )
 }
 const AppLayOut = () => {
-    const { tokenData, setTokenData } = useContext(AuthContext);
+    // const { token} = useContext(AuthContext);
+    // console.log("in app",token)
     return(
         <div>
 
@@ -101,7 +103,15 @@ const appRoute = createBrowserRouter(
         ]
     },
 ])
-const root = ReactDom.createRoot(document.getElementById('root'));
+// Ensure ReactDom.createRoot is only called once
+const container = document.getElementById('root');
+let root;
+if (!container._reactRootContainer) {
+    root = ReactDom.createRoot(container);
+} else {
+    root = container._reactRootContainer;
+}
+
 root.render(
     <RouterProvider router={appRoute}/>
 );

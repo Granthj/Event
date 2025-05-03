@@ -20,6 +20,11 @@ const events = async(eventId)=>{
         return {...events._doc,_id:events.id};
     })
 };
+const getcartId = async(response)=>{
+    const eventObjId = new mongoose.Types.ObjectId(response.cart[0].eventId );
+    const matched = response.cart.find(item => item.eventId.toString() === eventObjId.toString());
+    return matched._id;  
+}
 const CancelBooking = async(bookings)=>{
     return bookings.map(result=>{
         return result.event
@@ -127,13 +132,14 @@ customer:()=>{
     })
 },    
 event:(args,req)=>{
-    // if(req.auth){
+    console.log("THIS IS AUTHBHHJVYHV",req.auth,req.customerId)
+    if(req.auth){
     return Event.find().then(events=>{
         return events.map(event=>{
             return {...event._doc,bookedBy:bookedBy.bind(this,event._doc.bookedBy)}
         })
     })
-// }
+}
 },
 booking:async (args,req)=>{
     // if(req.auth){
@@ -181,7 +187,10 @@ createCustomer:async (args)=>{
     return bcrypt.hash(args.customerInput.password,12)
     .then(hashedPassword=>{
         const customer = new Customer({
-            name:args.customerInput.name,
+            firstname:args.customerInput.firstname,
+            lastname:args.customerInput.lastname,
+            dob:args.customerInput.dob,
+            gender:args.customerInput.gender,
             email:args.customerInput.email,
             password:args.customerInput.password,
             // profile:args.customerInput.profile.split("blob:")[1]
@@ -191,6 +200,26 @@ createCustomer:async (args)=>{
     .then(result=>{
         return{...result._doc,createEvent:events.bind(result._doc.createEvent)};
     })
+},
+cartEvent:async (args,req)=>{
+
+    const customerData = await Customer.findById(args.cartInput.customerId);
+    const alreadyInCart = customerData.cart.find(item => item.eventId.toString() === args.cartInput.eventId.toString());
+    if(alreadyInCart){
+        console.log("Already in cart")
+        return;
+    }
+    customerData.cart.push({
+        eventId:args.cartInput.eventId
+    })
+    const response = await customerData.save();
+    if(response){
+        const eventData = await Event.findById(args.cartInput.eventId);
+        const cartId = await getcartId(response);
+        if(cartId){
+            return {...eventData._doc,_id:cartId,eventId:eventData._id,customerId:response._id,}
+        }
+    }
 },
 createUser:async (args)=>{
     const bool = await User.find({email:args.userInput.email});
@@ -216,8 +245,12 @@ createUser:async (args)=>{
 addBooking:async (args,req)=>{
     // console.log(req.auth,"in Booking")
     // if(req.auth){
-    const fetchEvent = await Event.findOne({_id:args.eventId})
+    const fetchEvent = await Event.findOne({_id:args.createBooking.eventId});
+    // const fetchCustomer = await Customer.findOne({_id:args.createBooking.customerId});
     const fetchCustomer = req.customerId;
+    console.log(req.customerId,"customerId")
+    console.log(fetchEvent._id,"eventId")
+    console.log(fetchCustomer,"customerId")
     const alreadyBooked = await Booking.findOne({event:fetchEvent,customer:fetchCustomer})
     if(alreadyBooked){
         console.log("its Booked Already");
@@ -229,7 +262,8 @@ addBooking:async (args,req)=>{
     });
     const result = await booking.save();
 
-    const customers = await Customer.findById({_id:new mongoose.Types.ObjectId(`${req.customerId}`)});
+    // const customers = await Customer.findById({_id:new mongoose.Types.ObjectId(`${fetchCustomer._id}`)});
+    const customers = await Customer.findById({_id:fetchCustomer});
     customers.createEvent.push(fetchEvent);
     const res = await customers.save();
 
@@ -275,7 +309,11 @@ login:async ({email,password})=>{
         
         const token = jwt.sign({customerId:customer.id,email:customer.email},'Iamgood',{
             expiresIn:'1h'
-        });                                         
+        });  
+        // const decoded = jwt.decode(token);
+        // if (!decoded) {
+        //     throw Error('Failed to decode JWT');
+        // }                                       
     return {CustomerId:customer.id,token:token,tokenExpiration:1,Email:customer.email}
     
 },

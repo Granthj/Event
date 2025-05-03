@@ -8,7 +8,7 @@ const PaymentGateway = (props)=>{
     const [Order,setOrder] = useState();
     const [PaymentId,setPaymentId] = useState();
     const [Razorpay,isLoaded] = useRazorpay();
-    const { tokenData } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
     const {paymentId,setpaymentId} = useContext(PaymentContext);
     
     function loadScript(src) {
@@ -50,7 +50,7 @@ const PaymentGateway = (props)=>{
                   body: JSON.stringify(paymentQuery),
                   headers: {
                       'Content-Type': 'application/json',
-                      'Authorization': "Bearer" + " " + tokenData
+                      'Authorization': "Bearer" + " " + token
                   }
                 })
                 const order = await fetchData.json();

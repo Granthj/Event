@@ -4,11 +4,13 @@ const schema = mongoose.Schema;
 const bookSchema = new schema({
     customer:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Customer'
+        ref:'Customer',
+        required:true
     },
     event:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Event'
+        ref:'Event',
+        required:true
     }
 },
 {timestamps:true}
