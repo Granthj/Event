@@ -1,6 +1,8 @@
 import {useState, useContext, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+// import 'bootstrap-icons/font/bootstrap-icons.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 import ReactDom from 'react-dom/client';
 import Navbar from './component/navbar.js';
 import Form from './component/formm.js';
@@ -63,12 +65,16 @@ const appRoute = createBrowserRouter(
             element:<Form/>
         },
         {  
-            path:"/auth",
-            element:<Private path={"/auth"}/>
+            path:"/profile",
+            element:<Private path={"/profile"}/>
         },
         {
             path:"/bookings",
             element:<Private path={"/bookings"}/>
+        },
+        {
+            path:"/events-cart",
+            element:<Private path={"/events-cart"}/>
         },
         {
             path:"/events",

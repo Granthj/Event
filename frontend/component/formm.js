@@ -13,7 +13,7 @@ const Form = () => {
     const [genderState, setgenderState] = useState('');
     const [emailState, setemailState] = useState();
     const [passState, setpassState] = useState();
-    const [login, loginState] = useState(true);
+    const [login, loginState] = useState(false);
     const [token, setToken] = useState();
     const [file, setFile] = useState();
     const [imageUrl, setImageUrl] = useState(null);
@@ -23,14 +23,15 @@ const Form = () => {
     const navigate = useNavigate();
     const inputFile = useRef(null);
     let val;
+    console.log(setAuthData, "in form")
     if (token !== undefined) {
         val = true;
     }
     const switchModeHandler = () => {
-        if (login === true) {
-            return loginState(false);
+        if (login === false) {
+            return loginState(true);
         }
-        return loginState(true);
+        return loginState(false);
     }
     const setInputHandler = () => {
         inputFile.current.click();
@@ -40,22 +41,23 @@ const Form = () => {
         setImageUrl(URL.createObjectURL(event.target.files[0]));
 
     }
-    const handleCheckBox =(value)=>{
-       
-        if(value === 'male'){
+    const handleCheckBox = (value) => {
+
+        if (value === 'male') {
             referenceMale.current.checked = true;
             referenceFemale.current.checked = false;
             setgenderState(value);
         }
-        else{
+        else {
             referenceMale.current.checked = false;
             referenceFemale.current.checked = true;
             setgenderState(value);
         }
-        
+
     }
     const submit = (e) => {
         e.preventDefault();
+        loginState(false);
         // console.log("in submit",nameState,emailState,passState);
         console.log("in submit", firstnameState, lastnameState, dobState, genderState, emailState, passState);
 
@@ -99,7 +101,7 @@ const Form = () => {
             if (!login) {
                 // setTokenData(data.data.login);
                 console.log(data.data.login.token, "GHUIOP")
-                setAuthData.setAuthData(data.data.login.token, data.data.login.CustomerId);
+                setAuthData(data.data.login.token, data.data.login.CustomerId);
                 // localStorage.setItem('token',data.data.login.token);
                 localStorage.setItem('customerId', data.data.login.CustomerId);
                 return;
@@ -116,55 +118,72 @@ const Form = () => {
     return (
         <>
             {login ? <h1>Create Your Account</h1> : <h1>Log In</h1>}
-                <div className="container mt-5 custom-container w-25">
-    
-                    <form onSubmit={submit} >
-                        {login && (
-                            <>  <div className="mb-2">
-                                <label htmlFor="firstname" className="form-label">First Name</label>
-                                <br></br>
-                                <input type="firstname" placeholder="Enter Your First Name" name="firstname" className="form-control w-100" onChange={(e) => { setfirstnameState(e.target.value) }}></input>
-                            </div>
+            <div className="container mt-5 custom-container w-25">
+
+                <form onSubmit={submit} >
+                    {login ? (
+
+                        <div>
+                            <div>
+                                <div className="mb-2">
+                                    <label htmlFor="firstname" className="form-label">First Name</label>
+                                    <br></br>
+                                    <input type="firstname" placeholder="Enter Your First Name" name="firstname" className="form-control w-100" onChange={(e) => { setfirstnameState(e.target.value) }}></input>
+                                </div>
                                 <div className='mb-3'>
                                     <label htmlFor="lastname" className="form-label">Last Name</label>
                                     <input type="lastname" placeholder="Enter Your Last Name" name="lastname" className="form-control w-100" onChange={(e) => { setlastnameState(e.target.value) }}></input>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="dob" className="form-label">Date of Birth</label>
-                                    <input type="date" placeholder="Enter Your Date of Birth" name="dob" className="form-control w-100"  onChange={(e) => { setdobState(e.target.value) }}></input>
+                                    <input type="date" placeholder="Enter Your Date of Birth" name="dob" className="form-control w-100" onChange={(e) => { setdobState(e.target.value) }}></input>
                                 </div>
                                 {/* <br></br> */}
                                 <div className="mb-2 row align-items-center">
                                     <label className="col-sm-4 col-form-label">Gender</label>
-                                        <br></br>
+                                    <br></br>
                                     <div className="col-sm-10">
-                                        <input type="checkbox" className="form-check-input" name="gender" value="male" ref={referenceMale} onChange={(e)=>handleCheckBox(e.target.value) }></input>
+                                        <input type="checkbox" className="form-check-input" name="gender" value="male" ref={referenceMale} onChange={(e) => handleCheckBox(e.target.value)}></input>
                                         <label className="form-check-label" htmlFor='male'>Male</label>
                                     </div>
                                     <div className="col-sm-10">
-                                        <input type="checkbox" className="form-check-input" name="gender" value="female" ref={referenceFemale} onChange={(e)=>handleCheckBox(e.target.value)}></input>
+                                        <input type="checkbox" className="form-check-input" name="gender" value="female" ref={referenceFemale} onChange={(e) => handleCheckBox(e.target.value)}></input>
                                         <label className="form-check-label" htmlFor='female'>Female</label>
                                     </div>
                                 </div>
+                                <div className="mb-3">
+                                    <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
+                                    <input type="email" placeholder='Email' name="email" className="form-control w-100" aria-describedby="emailHelp" onChange={(e) => { setemailState(e.target.value) }}></input>
+                                    <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+                                </div>
+                                <div className='mb-3'>
+                                    <input type="password" placeholder='Password' name="pass" className="form-control w-100" onChange={(e) => { setpassState(e.target.value) }}></input>
+                                </div>
+                                <div className='text-center'>
+                                    <button type="submit" className="btn btn-primary" >Submit</button>
+                                </div>
+                            </div>
+                        </div>) :
 
-                            </>
-                        )}
-                        <div className="mb-3">
-                            <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-                            <input type="email" placeholder='Email' name="email" className="form-control w-100" aria-describedby="emailHelp"  onChange={(e) => { setemailState(e.target.value) }}></input>
-                            <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
-                        </div>
-                        <div className='mb-3'>
-                            <input type="password" placeholder='Password' name="pass" className="form-control w-100" onChange={(e) => { setpassState(e.target.value) }}></input>
-                        </div>
-                        <div className='text-center'>
-                            <button type="submit" className="btn btn-primary">Submit</button>
-                        </div>
-                    </form>
-                    <div className='text-center'>
-                        <button type="submit" className='btn btn-secondry' onClick={switchModeHandler}>Switch To {login ? 'Login' : 'SignUp'}</button>
-                    </div>
+                        (<div>
+                            <div className="mb-3">
+                                <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
+                                <input type="email" placeholder='Email' name="email" className="form-control w-100" aria-describedby="emailHelp" required onChange={(e) => { setemailState(e.target.value) }}></input>
+                                <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                            <div className='mb-3'>
+                                <input type="password" placeholder='Password' name="pass" className="form-control w-100" required onChange={(e) => { setpassState(e.target.value) }}></input>
+                            </div>
+                            <div className='text-center'>
+                                <button type="submit" className="btn btn-primary">Submit</button>
+                            </div>
+                        </div>)}
+
+                </form>
+                <div className='text-center'>
+                    <button type="submit" className='btn btn-secondry' onClick={switchModeHandler}>Switch To {login ? 'Login' : 'SignUp'}</button>
                 </div>
+            </div>
         </>
     )
 }

@@ -61,6 +61,7 @@ const user =  (userId)=>{
 }
 module.exports = {
 customerBookedAnEvent:async (args,req)=>{
+    console.log("EventBooked",req.auth,req.customerId,req.email)
     const customerID = await Customer.findOne({email:req.email});
     const objectID = customerID._id;
     const objectIdString = objectID.toString(); 
@@ -100,20 +101,27 @@ singleBooking:async (args,req)=>{
     let arrayofObject = [];
     const CustomerID = await Customer.findOne({email:req.email});
     const bookings = await Booking.find({customer:new mongoose.Types.ObjectId(`${CustomerID.id}`)});
-    let arrayBookingId = await CancelBooking(bookings)
+    let arrayEventId = await CancelBooking(bookings)
+    const ids = arrayEventId.map(item => item.eventId);
+    const events = await Event.find({_id:{$in:arrayEventId}});
+    // const eventArray = await Event.find({ _id: { $in: ids } });
     
-    const events = await Event.find({_id:{$in:arrayBookingId}});
-    
-    const eventArray = await events.map(customerBooking=>{
-        return{...customerBooking._doc}
+    const sortedEvents = ids.map(id => events.find(event => event._id.toString() === id));
+    const eventArray = await sortedEvents.map(customerBooking=>{
+        return{customerBooking}
     })
-    const bookingArray = await bookings.map(booking=>{
-        return{...booking._doc}
-    })
-    for(let i = 0,j = 0;i < bookingArray.length,j < eventArray.length;i++,j++){
-        objectofBooking[`_id`] = bookingArray[i]._id;
-        objectofBooking[`event`] = bookingArray[i].event;
-        objectofBooking[`title`] = eventArray[j].title
+    // const bookingArray = await bookings.map(booking=>{
+    //     return{...booking._doc}
+    // })
+    console.log(eventArray,"khguhg")
+
+    for(let i = 0;i < eventArray.length;i++){
+        objectofBooking[`_id`] = eventArray[i]._id;
+        objectofBooking[`title`] = eventArray[i].title
+        // objectofBooking[`event`] = eventArray[i].event;
+        objectofBooking[`price`] = eventArray[i].price
+        objectofBooking[`desc`] = eventArray[i].desc
+        objectofBooking[`date`] = eventArray[i].date
         arrayofObject.push(objectofBooking);
         objectofBooking = {};
     }
@@ -132,14 +140,14 @@ customer:()=>{
     })
 },    
 event:(args,req)=>{
-    console.log("THIS IS AUTHBHHJVYHV",req.auth,req.customerId)
-    if(req.auth){
+    // console.log("THIS IS AUTHBHHJVYHV",req.auth,req.customerId)
+    // if(req.auth){
     return Event.find().then(events=>{
         return events.map(event=>{
             return {...event._doc,bookedBy:bookedBy.bind(this,event._doc.bookedBy)}
         })
     })
-}
+// }
 },
 booking:async (args,req)=>{
     // if(req.auth){
@@ -220,6 +228,79 @@ cartEvent:async (args,req)=>{
             return {...eventData._doc,_id:cartId,eventId:eventData._id,customerId:response._id,}
         }
     }
+},
+cartEventDelete:async (args,req)=>{
+    const customerData = await Customer.findById(args.cartCancelInput.customerId);
+    const cartid = customerData.cart.find(item => item._id.toString() === args.cartCancelInput.cartId);
+    if(!cartid){
+        console.log("Not in cart")
+        return;
+    }
+    const eventData = await Event.findById(cartid.eventId);
+    customerData.cart.pull(cartid);
+    const response = await customerData.save();
+    if(response){
+        return {...eventData._doc,_id:cartid._id,eventId:eventData._id,customerId:response._id,}
+    }
+},
+getCart:async (args,req)=>{
+    const customerData = await Customer.findById(args.customerId);
+    const cartArray = customerData.cart.map(cart=>{
+        return{eventId:cart.eventId,_id:cart._id}
+    })
+    // console.log(cartArray,"cartArray")
+    const ids = cartArray.map(item => item.eventId);
+    // console.log(ids,"ids")
+    const eventArray = await Event.find({ _id: { $in: ids } });
+    const sortedEvents = ids.map(id => eventArray.find(event => event._id.toString() === id.toString()));
+    // console.log(sortedEvents,"sorted")
+    // const eventObj = await eventArray.map(event=>{
+    //     return{...event._doc}
+    // })
+    // console.log(eventObj,"eventObj")
+    let arrayofObject = []
+    let objectofBooking = {};
+    for(let i = 0;i < cartArray.length;i++){
+        objectofBooking[`_id`] = cartArray[i]._id;
+        objectofBooking[`eventId`] = cartArray[i].eventId;
+        objectofBooking[`title`] = sortedEvents[i].title
+        objectofBooking[`price`] = sortedEvents[i].price
+        objectofBooking[`desc`] = sortedEvents[i].desc
+        objectofBooking[`date`] = sortedEvents[i].date
+        arrayofObject.push(objectofBooking);
+        objectofBooking = {};
+    }
+    // console.log(arrayofObject,"arrayofObject")
+    return arrayofObject.map(result=>{
+        return {...result}
+    })
+},
+customerBooking:async (args)=>{
+    let array = [];
+    let object = [];
+    const customerData = await Customer.findById(args.customerId);
+    const bookings = await Booking.find({customer:new mongoose.Types.ObjectId(`${args.customerId}`)});
+
+    const eventIds = bookings.map(item => item.event);
+    const events = await Event.find({ _id: { $in: eventIds } });
+    const result = bookings.map(book => {
+            return events.find(eventid=> 
+                eventid._id.toString() === book.event.toString()
+     )});
+    for(let i = 0;i < result.length;i++){
+        object[`_id`] = result[i]._id;
+        object[`title`] = result[i].title;
+        object[`price`] = result[i].price;
+        object[`desc`] = result[i].desc;
+        object[`date`] = result[i].date;
+        object[`bookingId`] = bookings[i]._id;
+        object[`createdAt`] = bookings[i].createdAt
+        array.push(object);
+        object = {};
+    }
+    return array.map(obj=>{
+        return {...obj}
+    })
 },
 createUser:async (args)=>{
     const bool = await User.find({email:args.userInput.email});
