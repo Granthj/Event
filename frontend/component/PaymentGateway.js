@@ -4,7 +4,8 @@ import { AuthContext } from '../utils/authContext';
 import { PaymentContext } from '../utils/paymentId';
 import useRazorpay from "react-razorpay";
 
-const PaymentGateway = (props)=>{
+const PaymentGateway = ()=>{
+    // console.log(props,"from Payment")
     const [Order,setOrder] = useState();
     const [PaymentId,setPaymentId] = useState();
     const [Razorpay,isLoaded] = useRazorpay();
@@ -25,26 +26,31 @@ const PaymentGateway = (props)=>{
             document.body.appendChild(script)
         })
     }
-    const paymentQuery = {
-        query:`
-        mutation{
-            paymentGateway(eventId:"${props.event}"){
-                    id
-                    amount
-                    currency
-                    status
-                }
-            }
-            `
-        }
-        async function displayRazorpay () {
-            
+   
+    const displayRazorpay = async (eventId) => {
+            if (!eventId) {
+                alert("Event ID not found");
+                return;
+              }
+          
             const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
             
             if (!res){
                 alert('Razropay failed to load!!')
                 return 
               } 
+              const paymentQuery = {
+                query:`
+                mutation{
+                    paymentGateway(eventId:"${eventId}"){
+                            id
+                            amount
+                            currency
+                            status
+                        }
+                    }
+                    `
+                }
             const fetchData = await fetch('http://localhost:7000/graphql', {
                   method: "POST",
                   body: JSON.stringify(paymentQuery),
@@ -83,10 +89,11 @@ const PaymentGateway = (props)=>{
     const verifyPayment = async (response)=>{
         setpaymentId(response);
     }
-    return(
-        <>
-           <button onClick={displayRazorpay}>Pay now</button> 
-        </>
-    )
+    // return(
+    //     <>
+    //        <button onClick={displayRazorpay}>Pay now</button> 
+    //     </>
+    // )
+    return {displayRazorpay};
 }
 export default PaymentGateway

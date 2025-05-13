@@ -1,4 +1,5 @@
 import { useEffect, useState ,useContext} from "react";
+import '../css/cancelModal.css';
 
 const ModalCancelBooking = (props)=>{
     // console.log("I am  Here")
@@ -8,20 +9,42 @@ const ModalCancelBooking = (props)=>{
     // }
     return(
         <>
-            {props.close && <div  tabindex="-1" style={{width:"300px",padding:"10px",margin:"10px 700px",border:"2px solid black"}}>
-            <div className="modal-dialog">
-                <div className="modal-content">
-                <div className="modal-header">
-                    <h5 className="modal-title">Are You want To Cancel?</h5>
-    
-                </div>
-                <div className="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={props.closeCancel}>Close</button>
-                        <button type="button" class="btn btn-primary" onClick={props.confirmCancel}>Confirm</button>
-                </div>
-                </div>
-            </div>
-        </div>}
+            {props.close && (
+  <div 
+    className="modal-backdrop" 
+    tabIndex="-1" 
+    onClick={props.closeCancel} // Close modal when clicking outside
+  >
+    <div 
+      className="modal-container" 
+      onClick={(e) => e.stopPropagation()} // Prevent click propagation inside modal
+    >
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Are you sure you want to cancel?</h5>
+          </div>
+          <div className="modal-footer">
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              onClick={props.closeCancel}
+            >
+              Close
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-danger"  // Changed to red for "danger" action
+              onClick={props.confirmCancel}
+            >
+              Confirm Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
         
         </>
     )

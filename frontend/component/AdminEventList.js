@@ -2,7 +2,7 @@ import { useState } from "react";
 import Modal from 'react-modal';
 
 const AdminEventList = (props) => {
-    // console.log(props.data[0],"tuio")
+    // console.log(props.data,"tuio")
     const [modal,useModal] = useState(false);
     const [index,setIndex] = useState(0);
     const modalCloseHandler = ()=>{
@@ -32,7 +32,7 @@ const AdminEventList = (props) => {
     return (
         <>
           <p>{eventData}</p>
-          {modal&&<Modal isOpen={true}>
+          {modal&&<Modal isOpen={true} onRequestClose={modalCloseHandler}>
             <button onClick={modalCloseHandler}>Close</button>
             <ul>
                 {eventBooked.length!==0?<li>{eventBooked}</li>:<li>No Booking</li>}

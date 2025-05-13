@@ -8,16 +8,18 @@ import { BrowserRouter,Routes,Route } from 'react-router-dom';
 import YourBooking from './YourBooking';
 import Dashboard from "./Dashboard";
 import EventsPage from "./Events";
+import CartPage from "./CartPage";
+import Profile from "./Profile";
 
 
 const Private = ({path})=>{
     const {token,customerId} = useContext(AuthContext);
     const {admintokenData,setAdminTokenData} = useContext(AdminAuthContext);
     console.log("Private in",token,path,admintokenData)
-    if(path === "/auth"){
+    if(path === "/profile"){
         console.log(path)
         return(
-            token?<Auth/>:<Error/>
+            token?<Profile/>:<Error/>
     )
     }
     else if(path === "/bookings"){
@@ -31,6 +33,11 @@ const Private = ({path})=>{
     else if(path == '/events'){
         return(
             token?<EventsPage/>:<Error/>
+        )
+    }
+    else if(path == '/events-cart'){
+        return(
+            token?<CartPage/>:<Error/>
         )
     }
 }

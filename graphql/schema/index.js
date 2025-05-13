@@ -37,9 +37,10 @@ module.exports = buildSchema(`
             createEvent:[event!]
         }
         type singleBooking{
-            _id:ID
-            event:ID
-            title:String   
+            title:String!
+            price:String!
+            desc:String!
+            date:String!
         }
         type singleEvent{
             _id:ID!
@@ -72,6 +73,15 @@ module.exports = buildSchema(`
             token:String!
             tokenExpiration:Int!
         }
+        type booked{
+            _id:ID!
+            title:String!
+            price:String!
+            desc:String!
+            date:String!
+            bookingId:ID!
+            createdAt:String!
+        }
         input inputUser{
             email:String!
             password:String!
@@ -101,6 +111,10 @@ module.exports = buildSchema(`
             eventId:ID!
             customerId:ID!
         }
+        input inputCartCancel{
+            customerId:ID!
+            cartId:ID!
+        }
         type RootQuery{
            customerr:[customer!]!
            event:[event!]!
@@ -110,6 +124,8 @@ module.exports = buildSchema(`
            adminLogin(email:String,password:String):adminAuth
            singleBooking:[singleBooking]!
            customerBookedAnEvent:customerBookedAnEvent!
+           getCart(customerId:ID!):[cart!]!
+           customerBooking(customerId:ID!):[booked!]!
         }
         type RootMutation{
             createEvent(eventInput:inputEvent):event
@@ -119,6 +135,7 @@ module.exports = buildSchema(`
             cancelBooking(bookingId:ID!):booking
             paymentGateway(eventId:ID!):paymentOrder
             cartEvent(cartInput:inputCart):cart
+            cartEventDelete(cartCancelInput:inputCartCancel):cart
         }
 
         schema {

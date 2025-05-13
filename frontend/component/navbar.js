@@ -32,6 +32,9 @@ const Navbar = ()=>{
                     {setAuthData.token && <li className='nav-item custom-navbar-item'>
                         <NavLink to="/bookings" className={"nav-link"}>Bookings</NavLink>
                     </li>}
+                    {setAuthData.token && <li className='nav-item custom-navbar-item'>
+                        <NavLink to="/events-cart" className={"nav-link"}>Cart</NavLink>
+                    </li>}
                 </ul>
                     {setAuthData.token&&<button onClick={logOut} className='btn btn-light ms-3' >Logout</button>}
                 </div>
