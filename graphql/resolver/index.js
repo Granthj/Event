@@ -132,7 +132,7 @@ singleBooking:async (args,req)=>{
     
 
 },    
-customer:()=>{
+customer:async()=>{
     return Customer.find().then(customer=>{
         return customer.map(cust=>{
             return{...cust._doc,createEvent:events.bind(this,cust._doc.createEvent)}
@@ -192,22 +192,19 @@ createCustomer:async (args)=>{
     if(false){
         throw new Error("Customer Exists");
     }
-    return bcrypt.hash(args.customerInput.password,12)
-    .then(hashedPassword=>{
-        const customer = new Customer({
-            firstname:args.customerInput.firstname,
-            lastname:args.customerInput.lastname,
-            dob:args.customerInput.dob,
-            gender:args.customerInput.gender,
-            email:args.customerInput.email,
-            password:args.customerInput.password,
-            // profile:args.customerInput.profile.split("blob:")[1]
-        })
-        return customer.save()
-    })
-    .then(result=>{
-        return{...result._doc,createEvent:events.bind(result._doc.createEvent)};
-    })
+    const hashedPassword = await bcrypt.hash(args.customerInput.password, 12);
+     const customer = new Customer({
+      firstname: args.customerInput.firstname,
+      lastname: args.customerInput.lastname,
+      dob: args.customerInput.dob,
+      gender: args.customerInput.gender,
+      email: args.customerInput.email,
+      password: hashedPassword,
+    });
+    const result = await customer.save();
+    // console.log("HIT HERE",result)
+   
+    return{...result._doc,createEvent:events.bind(result._doc.createEvent)};
 },
 cartEvent:async (args,req)=>{
 
@@ -302,6 +299,54 @@ customerBooking:async (args)=>{
         return {...obj}
     })
 },
+customerData:async (args,req)=>{
+    const customerinfo = await Customer.findOne({_id:args.customerId});
+    console.log(customerinfo,"abcd")
+    // return {firstname:customerinfo.firstname,lastname:customerinfo.lastname,dob:customerinfo.dob,
+    //     gender:customerinfo.gender,email:customerinfo.email,password:customerinfo.password
+    // }
+    return {...customerinfo._doc}
+},
+updateCustomerData:async (args,req)=>{
+    let updateObj = {};
+    const customerPassword = await Customer.findOne({_id:args.updateCustomerInput.customerId});
+    const isEqual = await bcrypt.compare(args.updateCustomerInput.password,customerPassword.password);
+    if(!isEqual) throw new Error('Incorrect current password');
+    if(args.updateCustomerInput.newPassword !== '' && args.updateCustomerInput.newPassword !== args.updateCustomerInput.password){
+        const updatedPassword = await bcrypt.hash(args.updateCustomerInput.newPassword,12);
+        console.log(args.updateCustomerInput.newPassword,"newPassword")
+        updateObj = {
+            firstname:args.updateCustomerInput.firstname,
+            lastname:args.updateCustomerInput.lastname,
+            dob:args.updateCustomerInput.dob,
+            gender:args.updateCustomerInput.gender,
+            email:args.updateCustomerInput.email,
+            // password:args.updateCustomerInput.newPassword
+            password:updatedPassword
+        }
+    }
+    else{
+        console.log(args.updateCustomerInput.password,"oldPassword")
+        const password = await bcrypt.hash(args.updateCustomerInput.password,12);
+        updateObj={
+            firstname:args.updateCustomerInput.firstname,
+            lastname:args.updateCustomerInput.lastname,
+            dob:args.updateCustomerInput.dob,
+            gender:args.updateCustomerInput.gender,
+            email:args.updateCustomerInput.email,
+            password:password
+        }
+    }
+    const customerData = await Customer.findByIdAndUpdate(
+        args.updateCustomerInput.customerId,
+        updateObj,
+        { new: true, runValidators: true }
+    );
+    if (!customerData) {
+        throw new Error('Customer not found');
+    }
+    return customerData;
+},
 createUser:async (args)=>{
     const bool = await User.find({email:args.userInput.email});
     if(false){
@@ -382,11 +427,13 @@ cancelBooking:async (args,req)=>{
 
 login:async ({email,password})=>{
     const customer = await Customer.findOne({email:email});
+    console.log("CUSTOMER",customer.password)
     if(!customer){
         throw Error('User not found');
     }
-    // const isEqual = await bcrypt.compare(password,customer.password)
-    // if(!isEqual) throw Error('Password is incorrect');
+    const isEqual = await bcrypt.compare(password,customer.password)
+    console.log("INSIDE LOGINN",isEqual)
+    if(!isEqual) return ;
         
         const token = jwt.sign({customerId:customer.id,email:customer.email},'Iamgood',{
             expiresIn:'1h'

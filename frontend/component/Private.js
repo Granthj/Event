@@ -8,8 +8,8 @@ import { BrowserRouter,Routes,Route } from 'react-router-dom';
 import YourBooking from './YourBooking';
 import Dashboard from "./Dashboard";
 import EventsPage from "./Events";
-import CartPage from "./CartPage";
 import Profile from "./Profile";
+import CartPage from "./CartPage";
 
 
 const Private = ({path})=>{
