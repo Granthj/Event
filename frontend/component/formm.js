@@ -60,13 +60,13 @@ const Form = () => {
         loginState(false);
         // console.log("in submit",nameState,emailState,passState);
         console.log("in submit", firstnameState, lastnameState, dobState, genderState, emailState, passState);
-
+        
         // if(emailState.trim().length === 0 || passState.trim().length === 0)
         //     return;
         let query;
         query = login ? {
             query: `
-                mutation{
+            mutation{
                     createCustomer(customerInput:{firstname:"${firstnameState}",lastname:"${lastnameState}",dob:"${dobState}",gender:"${genderState}",email:"${emailState}",password:"${passState}"}){
                         _id
                         email
@@ -75,18 +75,18 @@ const Form = () => {
                         dob
                         gender
                     }
-                }
-        `} : {
-            query: `
-                query{
-                    login(email:"${emailState}"password:"${passState}"){
+                    }
+                    `} : {
+                        query: `
+                        query{
+                            login(email:"${emailState}"password:"${passState}"){
                         CustomerId
                         token
                         tokenExpiration
+                        }
+                        }
+                        `
                     }
-                }
-            `
-        }
 
         fetch('http://localhost:7000/graphql', {
             method: 'POST',
@@ -100,7 +100,7 @@ const Form = () => {
             console.log(data, "granth")
             if (!login) {
                 // setTokenData(data.data.login);
-                console.log(data.data.login.token, "GHUIOP")
+                console.log(data.data, "GHUIOP")
                 setAuthData(data.data.login.token, data.data.login.CustomerId);
                 // localStorage.setItem('token',data.data.login.token);
                 localStorage.setItem('customerId', data.data.login.CustomerId);

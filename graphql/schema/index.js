@@ -115,8 +115,18 @@ module.exports = buildSchema(`
             customerId:ID!
             cartId:ID!
         }
+        input inputCutomerUpdate{
+            customerId:ID!
+            firstname:String!
+            lastname:String!
+            dob:String!
+            gender:String!
+            email:String!
+            password:String!
+            newPassword:String!
+        }
         type RootQuery{
-           customerr:[customer!]!
+           customerData(customerId:ID):customer!
            event:[event!]!
            booking:[booking!]!
            customer:[customer!]!
@@ -136,6 +146,7 @@ module.exports = buildSchema(`
             paymentGateway(eventId:ID!):paymentOrder
             cartEvent(cartInput:inputCart):cart
             cartEventDelete(cartCancelInput:inputCartCancel):cart
+            updateCustomerData(updateCustomerInput:inputCutomerUpdate):customer
         }
 
         schema {

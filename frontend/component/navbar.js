@@ -24,7 +24,7 @@ const Navbar = ()=>{
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className=" custom-navbar navbar-nav ms-auto mb-2 mb-lg-0 nav-pills nav-fill ">
                     {setAuthData.token && <li className='custom-navbar-item nav-item '>
-                        <NavLink to="/auth" className={"nav-link"}>My profile</NavLink>
+                        <NavLink to="/profile" className={"nav-link"}>My profile</NavLink>
                     </li>}
                     {setAuthData.token && <li className='nav-item custom-navbar-item'>
                         <NavLink to="/events" className={"nav-link"}>Events</NavLink>
