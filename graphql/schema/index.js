@@ -82,6 +82,10 @@ module.exports = buildSchema(`
             bookingId:ID!
             createdAt:String!
         }
+        type session{
+            success:Boolean!
+            sessionToken:String!
+        }
         input inputUser{
             email:String!
             password:String!
@@ -125,6 +129,10 @@ module.exports = buildSchema(`
             password:String!
             newPassword:String!
         }
+        input inputUpdatePassword{
+            password:String!
+            sessionToken:String!
+        }
         type RootQuery{
            customerData(customerId:ID):customer!
            event:[event!]!
@@ -136,6 +144,8 @@ module.exports = buildSchema(`
            customerBookedAnEvent:customerBookedAnEvent!
            getCart(customerId:ID!):[cart!]!
            customerBooking(customerId:ID!):[booked!]!
+           sendOtp(email:String!):String!
+           verifyOtp(otp:String!,email:String!):session!
         }
         type RootMutation{
             createEvent(eventInput:inputEvent):event
@@ -147,6 +157,7 @@ module.exports = buildSchema(`
             cartEvent(cartInput:inputCart):cart
             cartEventDelete(cartCancelInput:inputCartCancel):cart
             updateCustomerData(updateCustomerInput:inputCutomerUpdate):customer
+            updateCustomerPassword(updatePasswordInput:inputUpdatePassword):Boolean!
         }
 
         schema {
