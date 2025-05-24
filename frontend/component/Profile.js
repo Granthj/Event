@@ -170,6 +170,7 @@ const Profile = () => {
 
                     if (isPasswordError) {
                         setPasswordError(true);
+                        setIsLoading(false);
                     }
                     throw new Error(data.errors[0].message);
                 }

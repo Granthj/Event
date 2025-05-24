@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Event = require('./model/Event.js')
 const User = require('./model/User.js');
+const nodemailer = require('nodemailer');
 const authorization = require('./utils/authorization.js')
 const { graphqlHTTP } = require('express-graphql');
 const Schema = require('./graphql/schema/index.js');
