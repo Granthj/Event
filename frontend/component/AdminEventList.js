@@ -24,7 +24,7 @@ const AdminEventList = (props) => {
             </>
         )
     });
-    const eventBooked = props.data[index].bookedBy.map(data=>{
+    const eventBooked = props.data[0].bookedBy.map(data=>{
             return (
                 <li>{data.email}</li>
             )

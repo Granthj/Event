@@ -3,6 +3,7 @@ import { AuthContext } from '../utils/authContext';
 import { Button, Modal } from 'react-bootstrap';
 import PaymentGateway from './PaymentGateway';
 import { PaymentContext } from '../utils/paymentId';
+import { useEffect, useRef } from 'react';
 const CartPage = () => {
     const { token, customerId } = useContext(AuthContext);
     const [cartData, setCartData] = useState([]);
@@ -11,9 +12,11 @@ const CartPage = () => {
     const [confirm,setConfirm] = useState(false);
     const {paymentId,setpaymentId} = useContext(PaymentContext);
     const {displayRazorpay} = PaymentGateway();
+    const hasRunOnce = useRef(false);
     
     // console.log(displayRazorpay,"ABCD")
     // const [close, setClose] = useState(true);
+    console.log(token, customerId, "token and customerId");
     const handleClose = () => setShow(false);
     const handleConfirm = ()=>{
         displayRazorpay(choosenData.eventId);
@@ -38,14 +41,14 @@ const CartPage = () => {
                 body: JSON.stringify(queryForCartData),
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': "Bearer" + " " + token
+                    // 'Authorization': "Bearer" + " " + token
                 }
             }).then(response => {
                 return response.json();
             }
             ).then(data => {
+                console.log(data,"cart data")
                 setCartData(data.data.getCart);
-                console.log(data.data.getCart,"cart data")
             })
         
         }
@@ -54,7 +57,10 @@ const CartPage = () => {
         }, []);
         
         useEffect(()=>{
-            
+             if (!hasRunOnce.current) {
+                hasRunOnce.current = true;
+                return; // Skip the first run
+            }
             console.log(paymentId,"PaymentIIIDDDD")
             if(paymentId){
             const queryForEvent = {

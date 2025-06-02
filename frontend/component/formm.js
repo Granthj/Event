@@ -3,8 +3,6 @@ import { AuthContext } from '../utils/authContext';
 import { useNavigate } from 'react-router-dom';
 import '../css/form.css';
 import { BrowserRouter, Routes, Route, Link} from 'react-router-dom';
-import Auth from '../component/Auth';
-import { cancelBooking } from '../../graphql/resolver';
 
 const Form = () => {
     const [firstnameState, setfirstnameState] = useState();
@@ -23,7 +21,7 @@ const Form = () => {
     const navigate = useNavigate();
     const inputFile = useRef(null);
     let val;
-    console.log(setAuthData, "in form")
+    // console.log(setAuthData, "in form")
     if (token !== undefined) {
         val = true;
     }
@@ -100,7 +98,7 @@ const Form = () => {
             console.log(data, "granth")
             if (!login) {
                 // setTokenData(data.data.login);
-                console.log(data.data, "GHUIOP")
+                // console.log(data.data, "GHUIOP")
                 setAuthData(data.data.login.token, data.data.login.CustomerId);
                 // localStorage.setItem('token',data.data.login.token);
                 localStorage.setItem('customerId', data.data.login.CustomerId);

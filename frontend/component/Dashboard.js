@@ -12,6 +12,9 @@ const Dashboard = () => {
     const [price, setPrice] = useState();
     const [desc, setDesc] = useState();
     const [date, setDate] = useState();
+    const [city, setCity] = useState();
+    const [State, set_State] = useState();
+    const [address, setAddress] = useState();
     const [value,setValue] = useState();
     const [bool,setBool] = useState(false);
     const [is,isSet] = useState(false);
@@ -28,7 +31,7 @@ const Dashboard = () => {
         const requestBody = {
             query: `
             mutation{
-                createEvent(eventInput:{title:"${title}",price:${price},desc:"${desc}",date:"${date}"}){
+                createEvent(eventInput:{title:"${title}",price:${price},desc:"${desc}",date:"${date}",city:"${city}",state:"${State}",address:"${address}"}){
                     title
                     price
                     desc
@@ -59,6 +62,9 @@ const Dashboard = () => {
                 price
                 desc
                 date
+                city
+                state
+                address
                 bookedBy{
                     email
                 }
@@ -66,33 +72,33 @@ const Dashboard = () => {
         }
         `
     }
-    useEffect(() => {
-        function fetchData() {
-            fetch('http://localhost:7000/graphql', {
-                method: "POST",
-                body: JSON.stringify(eventReqBody),
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'Authorization': "Bearer" + " " + tokenData
-                }
-            })
-                .then(response => {
-                    // if(response.status !== 200 && response.status !== 201) throw new Error('Failed');
-                    isSet(true);
-                    return response.json();
-                }).then(data => {
-                    if (is) {
-                        setValue(data.data.event); 
-                        setBool(true);
-                        // console.log("puy",data.data.event);  
-                    }
-                })
-            }
-            fetchData();
-        }, [valueConfirmHandler])
-    if(bool){
-        // console.log(value[0].bookedBy[0].email,"jcj")
-    }
+    // useEffect(() => {
+    //     function fetchData() {
+    //         fetch('http://localhost:7000/graphql', {
+    //             method: "POST",
+    //             body: JSON.stringify(eventReqBody),
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 // 'Authorization': "Bearer" + " " + tokenData
+    //             }
+    //         })
+    //             .then(response => {
+    //                 // if(response.status !== 200 && response.status !== 201) throw new Error('Failed');
+    //                 isSet(true);
+    //                 return response.json();
+    //             }).then(data => {
+    //                 if (is) {
+    //                     setValue(data.data.event); 
+    //                     setBool(true);
+    //                     // console.log("puy",data.data.event);  
+    //                 }
+    //             })
+    //         }
+    //         fetchData();
+    //     }, [valueConfirmHandler])
+    // if(bool){
+    //     // console.log(value[0].bookedBy[0].email,"jcj")
+    // }
     return (
         <>
         <h1>HELLO</h1>
@@ -107,13 +113,22 @@ const Dashboard = () => {
                     <label htmlFor='date'>Date</label>
                     <input className="form-control" type="datetime-local" onChange={(e) => setDate(e.target.value)}></input>
                     <br></br>
+                    <label htmlFor='city'>City</label>
+                    <input className="form-control" type="text" onChange={(e) => setCity(e.target.value)}></input>
+                    <br></br>
+                    <label htmlFor='state'>State</label>
+                    <input className="form-control" type="text" onChange={(e) => set_State(e.target.value)}></input>
+                    <br></br>
+                    <label htmlFor='address'>Address</label>
+                    <input className="form-control" type="text" onChange={(e) => setAddress(e.target.value)}></input>
+                    <br></br>
                     <label htmlFor='description'>Description</label>
                     <textarea className="form-control" type="text" onChange={(e) => setDesc(e.target.value)}></textarea>
                 </form>
             </Modal>}
             {<button className='btn btn-primary' onClick={setModalHandler}>Create Event</button>}
             <br></br>
-            {bool&&<AdminEventList data={value}></AdminEventList>}
+            {/* {bool&&<AdminEventList data={value}></AdminEventList>} */}
 
         </>
     )

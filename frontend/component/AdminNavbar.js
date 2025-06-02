@@ -4,7 +4,7 @@ import { useContext } from 'react';
 
 const AdminNavbar = ()=>{
     const {admintokenData, setAdminTokenData} = useContext(AdminAuthContext);
-    console.log(admintokenData,"chand");
+    // console.log(admintokenData,"chand");
     return(
         <div style={{width:"100%",height:"90px",backgroundColor:"GrayText"}}>
             <ul>

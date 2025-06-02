@@ -25,6 +25,9 @@ module.exports = buildSchema(`
             price:Int!
             desc:String!
             date:String!
+            city:String!
+            state:String!
+            address:String!
             bookedBy:[customer!]
         }
         type customerBookedAnEvent{
@@ -95,6 +98,9 @@ module.exports = buildSchema(`
             price:Int!
             desc:String!
             date:String!
+            city:String!
+            state:String!
+            address:String!
         }
         input inputBooking{
             eventId:ID!
@@ -146,6 +152,7 @@ module.exports = buildSchema(`
            customerBooking(customerId:ID!):[booked!]!
            sendOtp(email:String!):String!
            verifyOtp(otp:String!,email:String!):session!
+           eventsByLocation(city:String!,state:String!):[event!]!
         }
         type RootMutation{
             createEvent(eventInput:inputEvent):event
