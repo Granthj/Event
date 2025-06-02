@@ -7,7 +7,7 @@ import ReactDom from 'react-dom/client';
 import Navbar from './component/navbar.js';
 import Form from './component/formm.js';
 import New from './component/new.js';
-import Auth from './component/Auth.js';
+// import Auth from './component/Auth.js';
 import EventsPage from './component/Events.js';
 import YourBooking from './component/YourBooking.js';
 import Footer from './component/Footer.js';
@@ -17,14 +17,13 @@ import Dashboard from './component/Dashboard.js';
 import AdminNavbar from './component/AdminNavbar.js';
 import { AuthContext, AuthProvider } from './utils/authContext.js';
 import { AdminAuthContext, AdminAuthProvider } from './utils/adminAuth.js'
-import { createBrowserRouter, RouterProvider, BrowserRouter, Routes, Route, useNavigate, Outlet, createRoutesFromElements } from 'react-router-dom';
-import Booking from '../model/booking.js';
+import { createBrowserRouter, RouterProvider, BrowserRouter, Routes, Route, useNavigate, Outlet, createRoutesFromElements, useNavigation } from 'react-router-dom';
 import CustomersList from './component/Customers.js';
 import Eventitem from './component/Eventitem.js';
 import PaymentGateway from './component/PaymentGateway.js';
 import { PaymentProvider, PaymentContext } from './utils/paymentId.js';
 import ForgotPassword from './component/ForgotPassword.js';
-import NewPassword from './component/NewPassword.js';
+// import NewPassword from './component/NewPassword.js';
 const AdminPanel = () => {
     return (
         <>
@@ -39,14 +38,26 @@ const AdminPanel = () => {
     )
 }
 const AppLayOut = () => {
-    // const { token} = useContext(AuthContext);
-    // console.log("in app",token)
+    const navigate = useNavigate();
+    const handleCitySelected = (cityData) => {
+        const [city, state] = cityData.name.split(',').map(str => str.trim());
+        navigate(`/${city}`, {
+                state: {
+                    location: {
+                        city: city,
+                        state: state,
+                    }
+                }
+            });
+    // console.log("Selected city:", cityData);
+        // You can pass this data to a map component, global state, etc.
+    };
     return (
         <div>
 
             <AuthProvider>
                 <PaymentProvider>
-                    <Navbar />
+                    <Navbar onCitySelected={handleCitySelected} />
                     {/* <YourBooking/> */}
                     <Outlet />
                     <New />
@@ -64,7 +75,12 @@ const appRoute = createBrowserRouter(
             children: [
                 {
                     path: "/",
-                    element: <Form />
+                    element: <EventsPage />,
+                    index: true,
+                },
+                {
+                    path: ":city",
+                    element: <EventsPage />,
                 },
                 {
                     path: "forgot-password",
@@ -84,20 +100,9 @@ const appRoute = createBrowserRouter(
                     element: <Private path={"/events-cart"} />
                 },
                 {
-                    path: "/events",
-                    element: <Private path={"/events"} />,
-                    children: [
-                        {
-                            path: "events/book",
-                            element: <Eventitem></Eventitem>,
-                            children: [
-                                {
-                                    path: "book/payment",
-                                    element: <PaymentGateway></PaymentGateway>
-                                }
-                            ]
-                        }
-                    ]
+                    path: "/login",
+                    element: <Form />,
+                    
                 },
             ],
         },

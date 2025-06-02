@@ -7,9 +7,10 @@ const ModalCancelBooking = (props)=>{
     // const closeCancel = ()=>{
     //     setClose(false);
     // }
+    if (!props.show) return null;
     return(
         <>
-            {props.close && (
+           (
   <div 
     className="modal-backdrop" 
     tabIndex="-1" 
@@ -44,7 +45,7 @@ const ModalCancelBooking = (props)=>{
       </div>
     </div>
   </div>
-)}
+)
         
         </>
     )

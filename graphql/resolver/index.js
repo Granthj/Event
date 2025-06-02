@@ -34,9 +34,7 @@ const getcartId = async (response) => {
 const CancelBooking = async (bookings) => {
     return bookings.map(result => {
         return result.event
-    })
-    // console.log("Mango",promise)
-    // return promise;   
+    }) 
 }
 const bookedBy = async (Id) => {
     const bookArray = await Customer.find({ _id: { $in: Id } });
@@ -67,7 +65,6 @@ const user = (userId) => {
 }
 module.exports = {
     customerBookedAnEvent: async (args, req) => {
-        console.log("EventBooked", req.auth, req.customerId, req.email)
         const customerID = await Customer.findOne({ email: req.email });
         const objectID = customerID._id;
         const objectIdString = objectID.toString();
@@ -96,7 +93,6 @@ module.exports = {
                 };
             }
             catch (err) {
-                console.error('Error creating order:', err);
                 res.status(500).send('Error creating order');
             }
         }
@@ -116,10 +112,6 @@ module.exports = {
         const eventArray = await sortedEvents.map(customerBooking => {
             return { customerBooking }
         })
-        // const bookingArray = await bookings.map(booking=>{
-        //     return{...booking._doc}
-        // })
-        console.log(eventArray, "khguhg")
 
         for (let i = 0; i < eventArray.length; i++) {
             objectofBooking[`_id`] = eventArray[i]._id;
@@ -146,7 +138,6 @@ module.exports = {
         })
     },
     event: (args, req) => {
-        // console.log("THIS IS AUTHBHHJVYHV",req.auth,req.customerId)
         // if(req.auth){
         return Event.find().then(events => {
             return events.map(event => {
@@ -175,6 +166,9 @@ module.exports = {
             price: args.eventInput.price,
             desc: args.eventInput.desc,
             date: args.eventInput.date,
+            city: args.eventInput.city,
+            state: args.eventInput.state,
+            address: args.eventInput.address,
         })
         let createdEvent;
         return event.save()
@@ -196,7 +190,6 @@ module.exports = {
     },
     createCustomer: async (args) => {
         const bool = await Customer.find({ email: args.customerInput.email });
-        // console.log(args.customerInput.profile.split("blob:")[1],"profile")
         if (false) {
             throw new Error("Customer Exists");
         }
@@ -210,7 +203,6 @@ module.exports = {
             password: hashedPassword,
         });
         const result = await customer.save();
-        // console.log("HIT HERE",result)
 
         return { ...result._doc, createEvent: events.bind(result._doc.createEvent) };
     },
@@ -219,7 +211,6 @@ module.exports = {
         const customerData = await Customer.findById(args.cartInput.customerId);
         const alreadyInCart = customerData.cart.find(item => item.eventId.toString() === args.cartInput.eventId.toString());
         if (alreadyInCart) {
-            console.log("Already in cart")
             return;
         }
         customerData.cart.push({
@@ -238,7 +229,6 @@ module.exports = {
         const customerData = await Customer.findById(args.cartCancelInput.customerId);
         const cartid = customerData.cart.find(item => item._id.toString() === args.cartCancelInput.cartId);
         if (!cartid) {
-            console.log("Not in cart")
             return;
         }
         const eventData = await Event.findById(cartid.eventId);
@@ -253,16 +243,11 @@ module.exports = {
         const cartArray = customerData.cart.map(cart => {
             return { eventId: cart.eventId, _id: cart._id }
         })
-        // console.log(cartArray,"cartArray")
+        
         const ids = cartArray.map(item => item.eventId);
-        // console.log(ids,"ids")
         const eventArray = await Event.find({ _id: { $in: ids } });
         const sortedEvents = ids.map(id => eventArray.find(event => event._id.toString() === id.toString()));
-        // console.log(sortedEvents,"sorted")
-        // const eventObj = await eventArray.map(event=>{
-        //     return{...event._doc}
-        // })
-        // console.log(eventObj,"eventObj")
+        
         let arrayofObject = []
         let objectofBooking = {};
         for (let i = 0; i < cartArray.length; i++) {
@@ -272,10 +257,12 @@ module.exports = {
             objectofBooking[`price`] = sortedEvents[i].price
             objectofBooking[`desc`] = sortedEvents[i].desc
             objectofBooking[`date`] = sortedEvents[i].date
+            objectofBooking[`city`] = sortedEvents[i].city
+            objectofBooking[`address`] = sortedEvents[i].address
             arrayofObject.push(objectofBooking);
             objectofBooking = {};
         }
-        // console.log(arrayofObject,"arrayofObject")
+        
         return arrayofObject.map(result => {
             return { ...result }
         })
@@ -310,10 +297,6 @@ module.exports = {
     },
     customerData: async (args, req) => {
         const customerinfo = await Customer.findOne({ _id: args.customerId });
-        console.log(customerinfo, "abcd")
-        // return {firstname:customerinfo.firstname,lastname:customerinfo.lastname,dob:customerinfo.dob,
-        //     gender:customerinfo.gender,email:customerinfo.email,password:customerinfo.password
-        // }
         return { ...customerinfo._doc }
     },
     updateCustomerData: async (args, req) => {
@@ -323,19 +306,16 @@ module.exports = {
         if (!isEqual) throw new Error('Incorrect current password');
         if (args.updateCustomerInput.newPassword !== '' && args.updateCustomerInput.newPassword !== args.updateCustomerInput.password) {
             const updatedPassword = await bcrypt.hash(args.updateCustomerInput.newPassword, 12);
-            console.log(args.updateCustomerInput.newPassword, "newPassword")
             updateObj = {
                 firstname: args.updateCustomerInput.firstname,
                 lastname: args.updateCustomerInput.lastname,
                 dob: args.updateCustomerInput.dob,
                 gender: args.updateCustomerInput.gender,
                 email: args.updateCustomerInput.email,
-                // password:args.updateCustomerInput.newPassword
                 password: updatedPassword
             }
         }
         else {
-            console.log(args.updateCustomerInput.password, "oldPassword")
             const password = await bcrypt.hash(args.updateCustomerInput.password, 12);
             updateObj = {
                 firstname: args.updateCustomerInput.firstname,
@@ -359,7 +339,6 @@ module.exports = {
     sendOtp: async (args) => {
         const customerEmail = args.email;
         const emailExist = await Customer.findOne({ email: customerEmail });
-        console.log(emailExist, "emailExist")
         if (!emailExist) {
             throw new Error('Email not found');
         }
@@ -414,9 +393,7 @@ module.exports = {
         };
     },
     updateCustomerPassword: async (args) => {
-        console.log(args.updatePasswordInput.sessionToken, "tokin")
         const session = await PasswordResetSession.findOne({ token: args.updatePasswordInput.sessionToken });
-        console.log(session, "session")
         if (!session || session.expiresAt < Date.now()) {
             throw new Error("Invalid or expired token");
         }
@@ -428,6 +405,16 @@ module.exports = {
         await PasswordResetSession.deleteOne({ token: args.updatePasswordInput.sessionToken });
 
         return true;
+    },
+    eventsByLocation:async (args) => {
+        const city = args.city.toLowerCase();
+        const state = args.state.toLowerCase();
+        const events = await Event.find({ city, state });
+        console.log(city,state,events, "events by location");
+        if (!events || events.length === 0) {
+            throw new Error("No events found for the specified location");
+        }
+        return events
     },
 
     createUser: async (args) => {
@@ -452,17 +439,12 @@ module.exports = {
 
     },
     addBooking: async (args, req) => {
-        // console.log(req.auth,"in Booking")
         // if(req.auth){
         const fetchEvent = await Event.findOne({ _id: args.createBooking.eventId });
         // const fetchCustomer = await Customer.findOne({_id:args.createBooking.customerId});
         const fetchCustomer = req.customerId;
-        console.log(req.customerId, "customerId")
-        console.log(fetchEvent._id, "eventId")
-        console.log(fetchCustomer, "customerId")
         const alreadyBooked = await Booking.findOne({ event: fetchEvent, customer: fetchCustomer })
         if (alreadyBooked) {
-            console.log("its Booked Already");
             return;
         }
         const booking = new Booking({
@@ -492,9 +474,12 @@ module.exports = {
         // }
     },
     cancelBooking: async (args, req) => {
-        // console.log("bella chao",args.bookingId)
         if (req.auth) {
             const deletedBooking = await Booking.findOne({ _id: args.bookingId });
+            console.log("bella chao", deletedBooking)
+            if (!deletedBooking) {
+                throw new Error("Booking not found");
+            }
             await Booking.deleteOne({ _id: args.bookingId });
             console.log(deletedBooking.event, "pooo")
             // const deletedEvent = await Booking.findById({_id:args.bookingId});
@@ -503,20 +488,22 @@ module.exports = {
             //     _id:deletedEvent.event.id,
             //     event:singleEvent.bind(this,deletedEvent._doc.event)
             // }
-            const cancelCreateEvent = await Customer.findById({ _id: req.customerId });
-            const deleteEventFromCustomer = await Customer.findByIdAndUpdate(req.customerId, { $pull: { createEvent: `${deletedBooking}` } })
+            // const cancelCreateEvent = await Customer.findById({ _id: req.customerId });
+           
+            await Customer.findByIdAndUpdate(
+                req.customerId,
+                { $pull: { createEvent: deletedBooking.event.toString() } }
+            );
             // return {...deletedEvent.doc._id};
         }
     },
 
     login: async ({ email, password }) => {
         const customer = await Customer.findOne({ email: email });
-        console.log("CUSTOMER", customer.password)
         if (!customer) {
             throw Error('User not found');
         }
         const isEqual = await bcrypt.compare(password, customer.password)
-        console.log("INSIDE LOGINN", isEqual)
         if (!isEqual) return;
 
         const token = jwt.sign({ customerId: customer.id, email: customer.email }, 'Iamgood', {
@@ -531,7 +518,6 @@ module.exports = {
     },
     adminLogin: async ({ email, password }) => {
         const user = await User.findOne({ email: email });
-        console.log("ID", user.id)
         if (!user)
             throw Error("Invalidd Admin");
         const isEqual = await bcrypt.compare(password, user.password);

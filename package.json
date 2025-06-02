@@ -1,0 +1,35 @@
+{
+  "name": "graphql",
+  "version": "1.0.0",
+  "description": "this is test file",
+  "main": "app.js",
+  "start": "nodemon app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Granth",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "axios": "^1.9.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "bson": "^6.7.0",
+    "bson-objectid": "^2.0.4",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.5.0",
+    "express": "^4.19.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.9.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.8.0",
+    "mongoose": "^7.8.0",
+    "nodemailer": "^7.0.3",
+    "nodemon": "^3.1.4",
+    "otp-generator": "^4.0.1",
+    "razorpay": "^2.9.4",
+    "react-bootstrap-icons": "^1.11.6",
+    "react-icons": "^5.5.0"
+  }
+}

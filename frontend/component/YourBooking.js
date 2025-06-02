@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from '../utils/authContext';
-import { cancelBooking } from "../../graphql/resolver";
+
 import ModalCancel from './ModalCancelBooking';
 import '../css/yourBookings.css';
 
@@ -121,7 +121,7 @@ const YourBooking = () => {
                             <div className="d-flex gap-2 mt-3">
                                  <button
                                         className="btn btn-outline-danger btn-sm px-3 py-0"
-                                        onClick={() => cancelBooking(val._id)}
+                                        onClick={() => cancelBooking(val.bookingId)}
                                     >
                                         Cancel Booking
                                     </button>
@@ -143,7 +143,7 @@ const YourBooking = () => {
 
 
             <div className="container py-5">
-            {cancel && <ModalCancel confirmCancel={confirm} closeCancel={Close} close={close}></ModalCancel>}
+            {cancel && <ModalCancel confirmCancel={confirm} closeCancel={Close} show={close}></ModalCancel>}
                 <h2 className="text-center mb-4">Your Bookings</h2>
                 <div className="row justify-content-center">
                     <div className="col-lg-8">

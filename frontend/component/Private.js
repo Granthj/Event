@@ -30,11 +30,11 @@ const Private = ({path})=>{
             admintokenData?<Dashboard/>:<Error/>
         )
     }
-    else if(path == '/events'){
-        return(
-            token?<EventsPage/>:<Error/>
-        )
-    }
+    // else if(path == '/events'){
+    //     return(
+    //         token?<EventsPage/>:<Error/>
+    //     )
+    // }
     else if(path == '/events-cart'){
         return(
             token?<CartPage/>:<Error/>

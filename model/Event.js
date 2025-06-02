@@ -18,6 +18,18 @@ const Event = new schema({
         type:Date,
         required:true
     },
+    city:{
+        type:String,
+        required:true
+    },
+    state:{
+        type:String,
+        required:true
+    },
+    address:{
+        type:String,
+        required:true
+    },
     // creator:{
     //     type:mongoose.Schema.Types.ObjectId,
     //     ref:'User'
