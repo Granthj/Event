@@ -1,3 +1,5 @@
+Demo video
+![Image](https://github.com/user-attachments/assets/27bd8e57-1360-4a93-8518-40d7469485a4)
 # Event Booking App
 
 An event booking application built with React for the frontend, GraphQL for the API, Mongoose for MongoDB data management, and Razorpay for payment processing.
