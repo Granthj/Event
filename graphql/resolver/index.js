@@ -20,6 +20,29 @@ const razorpay = new Razorpay({
     key_id: 'rzp_test_u2a8oM3ko4mvF2',
     key_secret: 'FFZoe1Vpd6QMG5vzeXMkTULx'
 });
+const OtpSameCode = async (customerEmail,value) => {
+    const otp = otpGenerator.generate(4, {
+        digits: true,
+        upperCaseAlphabets: false,
+        lowerCaseAlphabets: false,
+        specialChars: false,
+    });
+    const expiresAt = new Date(Date.now() + 1 * 60 * 1000);
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: customerEmail,
+        subject: 'Your OTP Code',
+        text: `Your OTP code for ${value} is ${otp}. It will expire in 1 minutes.`,
+    };
+    const otpDb = new Otp({
+        email: customerEmail,
+        code: otp,
+        expiresAt: expiresAt,
+        ttlAt: new Date(Date.now() + 30 * 60 * 1000),
+    })
+    await otpDb.save();
+    await transporter.sendMail(mailOptions);
+}
 const events = async (eventId) => {
     const event = await Event.find({ _id: { $in: eventId } });
     return event.map(events => {
@@ -34,7 +57,7 @@ const getcartId = async (response) => {
 const CancelBooking = async (bookings) => {
     return bookings.map(result => {
         return result.event
-    }) 
+    })
 }
 const bookedBy = async (Id) => {
     const bookArray = await Customer.find({ _id: { $in: Id } });
@@ -190,8 +213,9 @@ module.exports = {
     },
     createCustomer: async (args) => {
         const bool = await Customer.find({ email: args.customerInput.email });
-        if (false) {
-            throw new Error("Customer Exists");
+        console.log(bool, args.customerInput.email, "bool");
+        if (bool.length > 0) {
+            throw new Error("Email already exists");
         }
         const hashedPassword = await bcrypt.hash(args.customerInput.password, 12);
         const customer = new Customer({
@@ -207,10 +231,10 @@ module.exports = {
         return { ...result._doc, createEvent: events.bind(result._doc.createEvent) };
     },
     cartEvent: async (args, req) => {
-
         const customerData = await Customer.findById(args.cartInput.customerId);
         const alreadyInCart = customerData.cart.find(item => item.eventId.toString() === args.cartInput.eventId.toString());
         if (alreadyInCart) {
+            // console.log("BACKEND")
             return;
         }
         customerData.cart.push({
@@ -243,11 +267,11 @@ module.exports = {
         const cartArray = customerData.cart.map(cart => {
             return { eventId: cart.eventId, _id: cart._id }
         })
-        
+
         const ids = cartArray.map(item => item.eventId);
         const eventArray = await Event.find({ _id: { $in: ids } });
         const sortedEvents = ids.map(id => eventArray.find(event => event._id.toString() === id.toString()));
-        
+
         let arrayofObject = []
         let objectofBooking = {};
         for (let i = 0; i < cartArray.length; i++) {
@@ -262,7 +286,7 @@ module.exports = {
             arrayofObject.push(objectofBooking);
             objectofBooking = {};
         }
-        
+
         return arrayofObject.map(result => {
             return { ...result }
         })
@@ -311,7 +335,7 @@ module.exports = {
                 lastname: args.updateCustomerInput.lastname,
                 dob: args.updateCustomerInput.dob,
                 gender: args.updateCustomerInput.gender,
-                email: args.updateCustomerInput.email,
+                // email: args.updateCustomerInput.email,
                 password: updatedPassword
             }
         }
@@ -322,7 +346,7 @@ module.exports = {
                 lastname: args.updateCustomerInput.lastname,
                 dob: args.updateCustomerInput.dob,
                 gender: args.updateCustomerInput.gender,
-                email: args.updateCustomerInput.email,
+                // email: args.updateCustomerInput.email,
                 password: password
             }
         }
@@ -342,27 +366,30 @@ module.exports = {
         if (!emailExist) {
             throw new Error('Email not found');
         }
-        const otp = otpGenerator.generate(4, {
-            digits: true,
-            upperCaseAlphabets: false,
-            lowerCaseAlphabets: false,
-            specialChars: false,
-        });
-        const expiresAt = new Date(Date.now() + 1 * 60 * 1000);
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: customerEmail,
-            subject: 'Your OTP Code',
-            text: `Your OTP code for forgot password is ${otp}. It will expire in 1 minutes.`,
-        };
-        const otpDb = new Otp({
-            email: customerEmail,
-            code: otp,
-            expiresAt: expiresAt,
-            ttlAt: new Date(Date.now() + 30 * 60 * 1000),
-        })
-        await otpDb.save();
-        await transporter.sendMail(mailOptions);
+        const value = "forgot password"
+        OtpSameCode(customerEmail,value);
+        return 'otp sent successfully';
+
+    },
+    sendOtpforNewEmail: async (args) => {
+        const customerEmail = args.email;
+        const emailExist = await Customer.findOne({ email: customerEmail });
+        if (emailExist) {
+            throw new Error('Email already used!');
+        }
+        const value = "update email"
+        OtpSameCode(customerEmail,value);
+        return 'otp sent successfully';
+
+    },
+    sendOtpNewAccount:async (args) => {
+        const customerEmail = args.email;
+        const emailExist = await Customer.findOne({ email: customerEmail });
+        if (emailExist) {
+            throw new Error('Email already used!');
+        }
+        const value = "to create account"
+        OtpSameCode(customerEmail,value);
         return 'otp sent successfully';
     },
     verifyOtp: async (args) => {
@@ -383,7 +410,7 @@ module.exports = {
 
         sessionStore.set(sessionToken, { email, expiresAt });
         await PasswordResetSession.create({
-            token:sessionToken,
+            token: sessionToken,
             email: email,
             expiresAt // 10 minutes
         });
@@ -391,6 +418,35 @@ module.exports = {
             success: true,
             sessionToken
         };
+    },
+    verifyOtpEmail: async (args) => {
+        const { otp, email, oldEmail } = args;
+        const otpData = await Otp.findOne({ email: email, code: otp });
+        if (!otpData) {
+            throw new Error('Invalid OTP');
+        }
+        if (otpData.expiresAt < new Date()) {
+            throw new Error('OTP expired');
+        }
+        const customerData = await Customer.findOneAndUpdate(
+            { email: oldEmail },
+            { $set: { email: email } },
+            { new: true, runValidators: true }
+        );
+        await Otp.deleteOne({ _id: otpData._id });
+        return true;
+    },
+    verifyOtpNewAccount: async (args) => {
+         const { otp, email } = args;
+        const otpData = await Otp.findOne({ email: email, code: otp });
+        if (!otpData) {
+            throw new Error('Invalid OTP');
+        }
+        if (otpData.expiresAt < new Date()) {
+            throw new Error('OTP expired');
+        }
+        await Otp.deleteOne({ _id: otpData._id });
+        return true;
     },
     updateCustomerPassword: async (args) => {
         const session = await PasswordResetSession.findOne({ token: args.updatePasswordInput.sessionToken });
@@ -406,11 +462,11 @@ module.exports = {
 
         return true;
     },
-    eventsByLocation:async (args) => {
+    eventsByLocation: async (args) => {
         const city = args.city.toLowerCase();
         const state = args.state.toLowerCase();
         const events = await Event.find({ city, state });
-        console.log(city,state,events, "events by location");
+        console.log(city, state, events, "events by location");
         if (!events || events.length === 0) {
             throw new Error("No events found for the specified location");
         }
@@ -489,7 +545,7 @@ module.exports = {
             //     event:singleEvent.bind(this,deletedEvent._doc.event)
             // }
             // const cancelCreateEvent = await Customer.findById({ _id: req.customerId });
-           
+
             await Customer.findByIdAndUpdate(
                 req.customerId,
                 { $pull: { createEvent: deletedBooking.event.toString() } }
@@ -501,10 +557,10 @@ module.exports = {
     login: async ({ email, password }) => {
         const customer = await Customer.findOne({ email: email });
         if (!customer) {
-            throw Error('User not found');
+            throw Error('Email is incorrect');
         }
         const isEqual = await bcrypt.compare(password, customer.password)
-        if (!isEqual) return;
+        if (!isEqual) throw Error('Password is incorrect');
 
         const token = jwt.sign({ customerId: customer.id, email: customer.email }, 'Iamgood', {
             expiresIn: '1h'

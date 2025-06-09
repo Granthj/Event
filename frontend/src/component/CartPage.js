@@ -16,7 +16,7 @@ const CartPage = () => {
     
     // console.log(displayRazorpay,"ABCD")
     // const [close, setClose] = useState(true);
-    console.log(token, customerId, "token and customerId");
+    // console.log(token, customerId, "token and customerId");
     const handleClose = () => setShow(false);
     const handleConfirm = ()=>{
         displayRazorpay(choosenData.eventId);
@@ -47,8 +47,13 @@ const CartPage = () => {
                 return response.json();
             }
             ).then(data => {
-                console.log(data,"cart data")
+                if(data.data === null){
+                    console.log("No cart data found");
+                    return;
+                }
+                // console.log(data,"cart data")
                 setCartData(data.data.getCart);
+                
             })
         
         }

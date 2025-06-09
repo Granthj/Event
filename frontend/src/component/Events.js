@@ -10,17 +10,25 @@ const EventsPage = () => {
     const location = useLocation();
     const data = location.state;
     const { city } = useParams();
-    console.log("EventsPage rendered", data?.location?.state, city);
+    const citi = data?.location?.city;
+    const state = data?.location?.state;
+    console.log("EventsPage rendered", city,);
     const [events, setEvents] = useState([]);
     const [key, setKey] = useState(null);
     const [show, setShow] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const { token, customerId } = useContext(AuthContext);
-    const queryBody = city
+  
+    useEffect(() => {
+        if (citi !== city) {
+            navigate('/');
+        }
+  }, [city]);
+    const queryBody = citi
         ? {
             query: `
               query {
-                eventsByLocation(city: "${city}",state: "${data?.location?.state}") {
+                eventsByLocation(city: "${citi}",state: "${data?.location?.state}") {
                   _id
                   title
                   price
@@ -67,7 +75,7 @@ const EventsPage = () => {
                     return response.json();
                 }).then(data => {
                     console.log(data, "data from events");
-                    if (data.data === null) {
+                    if (data.errors) {
                         setShow(true);
                         setTimeout(()=>{
                             setShow(false);
@@ -75,13 +83,12 @@ const EventsPage = () => {
                         }, 2000);
                         throw new Error(data.errors[0].message);
                     }
-                    if (city) {
+                    console.log()
+                    if (citi) {
                         setEvents(data.data.eventsByLocation);
                         setKey(data.data.eventsByLocation);
                     }
-                    else if (data.data !== null) {
-                        // console.log(token,"tokenFROMEVENTS")
-                        // console.log(data.data.event, "ok Error")
+                    else if (data.data !== null) {  
                         setEvents(data.data.event);
                         setKey(data.data.event);
                     }
@@ -91,12 +98,12 @@ const EventsPage = () => {
                 })
         }
         fetchData();
-    }, [city])
+    }, [citi])
     const onClose = ()=>{
         setShow(false);
     }
     return (
-        <>  {!key ? <Shimmer></Shimmer> : <Eventitem events={events}></Eventitem>}
+        <>  {!key ? <Shimmer></Shimmer> : <Eventitem events={events} city={citi}></Eventitem>}
             
                 {<Modal show={show} onHide={onClose} centered>
                     <Modal.Header closeButton style={{ backgroundColor: "#4CAF50", color: "white" }}>

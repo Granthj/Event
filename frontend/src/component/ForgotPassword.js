@@ -21,11 +21,7 @@ const ForgotPassword = () => {
     const navigate = useNavigate();
     const handleEmail = (e) => {
         setEmailError(false);
-        const emailRegex = /^[a-z][a-zA-Z0-9._%+-]*@?[a-zA-Z0-9.-]*\.?[a-zA-Z]*$/;
-        const emailValue = e.target.value;
-        if (emailRegex.test(emailValue) || emailValue === '') {
-            setEmail(emailValue);
-        }
+        setEmail(e.target.value);
     };
     const verifyOtp = (otp) => {
         const sendOtpData = {
@@ -66,9 +62,9 @@ const ForgotPassword = () => {
                     setSessionToken(result.sessionToken);
                 }
             }
-            console.log(data, "response")
+            // console.log(data, "response")
         }).catch(err => {
-            console.log(err.message, "error");
+            // console.log(err.message, "error");
             setChild(true);
             setOtpMatched(true);
             setShow(true);
@@ -80,7 +76,7 @@ const ForgotPassword = () => {
     }
     useEffect(() => {
         if (sessionToken) {
-            console.log("JJkkkJJ", sessionToken)
+            // console.log("JJkkkJJ", sessionToken)
             setChild(false); // Move setChild here
         }
     }, [sessionToken]);
