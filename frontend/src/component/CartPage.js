@@ -163,13 +163,13 @@ const CartPage = () => {
                                 </p>
                                 <div className="d-flex gap-2 mt-3">
                                     <button
-                                        className="btn btn-primary btn-sm px-3 py-0"
+                                        className="btn btn-dark btn-sm px-3 py-0"
                                         onClick={() => onBook(item)}
                                     >
                                         Book Now
                                     </button>
                                     <button
-                                        className="btn btn-outline-danger btn-sm px-3 py-0"
+                                        className="btn btn-outline-dark btn-sm px-3 py-0"
                                         onClick={() => onRemove(item)}
                                     >
                                         Remove
@@ -216,10 +216,10 @@ const CartPage = () => {
                 </Modal.Header>
                 <Modal.Body><strong>Date of the event: {new Date(Number(choosenData.date)).toLocaleDateString()}</strong></Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="dark" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleConfirm}>
+                    <Button variant="dark" onClick={handleConfirm}>
                         Confirm
                     </Button>
                 </Modal.Footer>

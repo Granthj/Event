@@ -151,7 +151,7 @@ const EmailChange = (props) => {
                         </div>
 
                         <div className="d-grid">
-                            <button className="btn btn-primary" type="submit">
+                            <button className="btn btn-dark" type="submit">
                                 Update Email
                             </button>
                         </div>

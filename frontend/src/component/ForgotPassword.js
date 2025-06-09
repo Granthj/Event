@@ -246,7 +246,7 @@ const ForgotPassword = () => {
                                                     </div>
                                                     <span className="ms-2">Submitting...</span></div>
                                             </>) : (
-                                                <button type="submit" className="btn btn-primary btn-sm w-100 py-2" onClick={(e) => handleOtp(e)}>Send OTP</button>)}
+                                                <button type="submit" className="btn btn-dark btn-sm w-100 py-2" onClick={(e) => handleOtp(e)}>Send OTP</button>)}
                                         </div>
                                     </form>
                                 </div>
@@ -320,7 +320,7 @@ const ForgotPassword = () => {
                                     </div>
 
                                     <div className="small">
-                                        <Link to="/" className="text-decoration-none">Back to Login</Link>
+                                        <Link to="/login" className="text-decoration-none">Back to Login</Link>
                                     </div>
                                 </div>
                             )}

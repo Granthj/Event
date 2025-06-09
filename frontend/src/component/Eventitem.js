@@ -143,7 +143,7 @@ const Eventitem = (props) => {
                         <div className="card-body">
                             <h5 key={val._id} className="card-title">{val.title}</h5>
                             <p className="card-text text-muted small mb-2">{val.desc}</p>
-                            <p className="fw-bold text-primary mb-3">{val.price}</p>
+                            <p className="fw-bold text-dark mb-3">{val.price}</p>
                             <p className="card-text text-muted small mb-2">
                                 <FontAwesomeIcon icon={faMapMarkerAlt} />{val.address}, {val.city}, {val.state}
                             </p>
@@ -152,8 +152,8 @@ const Eventitem = (props) => {
                             </p>
 
                             <div className="d-flex justify-content-between">
-                                <button onClick={() => bookAnEvent(val._id)} value={val._id} className="btn btn-success btn-sm">Book</button>
-                                <button onClick={() => saveInCart(val._id)} className="btn btn-success btn-sm">Add-to-cart</button>
+                                <button onClick={() => bookAnEvent(val._id)} value={val._id} className="btn btn-dark btn-sm">Book</button>
+                                <button onClick={() => saveInCart(val._id)} className="btn btn-dark btn-sm">Add-to-cart</button>
                             </div>
 
 

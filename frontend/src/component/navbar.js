@@ -12,10 +12,28 @@ import logo from 'url:../assets/logo.png';
 
 const Navbar = (props) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null);
+    const dropdownButtonRef = useRef(null);    // hamburger button
+    const dropdownBoxRef = useRef(null);
 
-    const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+    const toggleDropdown = () => {
+        setIsDropdownOpen((prev) => !prev);
+        // setIsDropdownOpen(!isDropdownOpen)
+    };
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                dropdownButtonRef.current &&
+                !dropdownButtonRef.current.contains(event.target) &&
+                dropdownBoxRef.current &&
+                !dropdownBoxRef.current.contains(event.target)
+            ) {
+                setIsDropdownOpen(false);
+            }
+        };
 
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
     const setAuthData = useContext(AuthContext);
     const logout = useContext(AuthContext);
     const navigate = useNavigate();
@@ -26,7 +44,7 @@ const Navbar = (props) => {
     }
     return (
         <>
-            <nav className='navbar navbar-expand-lg  sticky-top' style={{ backgroundColor: "#0d6efd", minHeight: "60px", overflow: 'hidden' }}>
+            <nav className='navbar navbar-expand-lg  sticky-top' style={{ backgroundColor: "#0d6efd", minHeight: "60px" }}>
                 <div className='container-fluid d-flex justify-content-between align-items-center'>
                     <Link to="/">
                         <img
@@ -44,7 +62,7 @@ const Navbar = (props) => {
 
 
                     {/* Hamburger for mobile */}
-                    <div className="d-lg-none position-relative" ref={dropdownRef}>
+                    <div className="d-lg-none position-relative" ref={dropdownButtonRef}>
                         <button
                             className='btn'
                             onClick={toggleDropdown}
@@ -54,7 +72,7 @@ const Navbar = (props) => {
                         </button>
 
                         {/* Dropdown panel */}
-                        {isDropdownOpen && (
+                        {/* {isDropdownOpen && (
                             <div className='dropdown-menu-box shadow'
                                 style={{ backgroundColor: '#f8f9fa', borderRadius: '8px' }}
                             >
@@ -90,7 +108,7 @@ const Navbar = (props) => {
                                     }} onClick={toggleDropdown}>Login</Link>
                                 )}
                             </div>
-                        )}
+                        )} */}
                     </div>
 
                     {/* Desktop view */}
@@ -98,21 +116,63 @@ const Navbar = (props) => {
                         <ul className='navbar-nav nav-pills nav-fill'>
                             {setAuthData.token && (
                                 <>
-                                    <li className='nav-item'><NavLink to='/profile' className='nav-link'>My profile</NavLink></li>
-                                    <li className='nav-item'><NavLink to='/bookings' className='nav-link'>Bookings</NavLink></li>
-                                    <li className='nav-item'><NavLink to='/events-cart' className='nav-link'>Cart</NavLink></li>
+                                    <li className='nav-item'><NavLink to='/profile' className='nav-link'><strong>My Profile</strong></NavLink></li>
+                                    <li className='nav-item'><NavLink to='/bookings' className='nav-link'><strong>Bookings</strong></NavLink></li>
+                                    <li className='nav-item'><NavLink to='/events-cart' className='nav-link'><strong>Cart</strong></NavLink></li>
                                 </>
                             )}
                         </ul>
                         <Search onCitySelected={props.onCitySelected} />
                         {setAuthData.token ? (
-                            <button onClick={logOut} className='btn btn-light ms-3' style={{ color: "#0d6efd" }}>Logout</button>
+                            <button onClick={logOut} className='btn btn-light ms-3' style={{ color: "#0d6efd" }}><strong>Logout</strong></button>
                         ) : (
-                            <Link to='/login' className='btn btn-light ms-3' >Login</Link>
+                            <Link to='/login' className='btn btn-light ms-3' style={{ color: "#0d6efd" }}><strong>Login</strong></Link>
                         )}
                     </div>
                 </div>
             </nav>
+            {isDropdownOpen && (
+                <div className='dropdown-menu-box shadow d-lg-none sticky-top'
+                    ref={dropdownBoxRef}
+                    style={{
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: '8px',
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <ul className='nav flex-column'>
+                        {setAuthData.token && (
+                            <>
+                                <li className='nav-item'>
+                                    <NavLink to='/profile' className='nav-link' onClick={toggleDropdown}>My profile</NavLink>
+                                </li>
+                                <li className='nav-item'>
+                                    <NavLink to='/bookings' className='nav-link' onClick={toggleDropdown}>Bookings</NavLink>
+                                </li>
+                                <li className='nav-item'>
+                                    <NavLink to='/events-cart' className='nav-link' onClick={toggleDropdown}>Cart</NavLink>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+                    <div className="my-2 mx-3">
+                        <Search onCitySelected={props.onCitySelected} />
+                    </div>
+                    {setAuthData.token ? (
+                        <button onClick={() => { toggleDropdown(); logOut(); }} className='btn btn-danger w-100' style={{
+                            backgroundColor: "#e3f2fd",
+                            color: "#0d6efd",
+                            border: "none"
+                        }}><strong>Logout</strong></button>
+                    ) : (
+                        <Link to='/login' className='btn btn-success w-100' style={{
+                            backgroundColor: "#e3f2fd",
+                            color: "#0d6efd",
+                            border: "none"
+                        }} onClick={toggleDropdown}><strong>Login</strong></Link>
+                    )}
+                </div>
+            )}
         </>
 
 

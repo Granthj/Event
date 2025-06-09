@@ -28,14 +28,14 @@ const ModalCancelBooking = (props)=>{
           <div className="modal-footer">
             <button 
               type="button" 
-              className="btn btn-secondary" 
+              className="btn btn-dark" 
               onClick={props.closeCancel}
             >
               Close
             </button>
             <button 
               type="button" 
-              className="btn btn-danger"  // Changed to red for "danger" action
+              className="btn btn-dark"  // Changed to red for "danger" action
               onClick={props.confirmCancel}
             >
               Confirm Cancel

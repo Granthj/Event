@@ -336,7 +336,7 @@ const SignUp = () => {
                                 </div>
 
                                 <div className="text-center">
-                                    <button type="submit" className="btn btn-primary w-100">Submit</button>
+                                    <button type="submit" className="btn btn-dark w-100">Submit</button>
                                 </div>
                             </form>
                                 <div className="text-center mt-3">

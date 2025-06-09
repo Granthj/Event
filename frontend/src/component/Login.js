@@ -1,7 +1,7 @@
 import { useState, useContext } from "react"
 import { useNavigate} from "react-router";
 import { AuthContext } from '../utils/authContext';
-import { useLocation } from "react-router-dom";
+import { useLocation,Link } from "react-router-dom";
 
 
 const Login = ()=>{
@@ -111,12 +111,43 @@ const Login = ()=>{
                                 
 
                                 <div className="text-center">
-                                    <button type="submit" className="btn btn-primary w-100">Submit</button>
+                                    <button type="submit" className="btn btn-dark w-100">Submit</button>
                                 </div>
                             </form>
                                 <div className="text-center mt-3">
                                     <button type="submit" className='btn btn-secondry' onClick={toLogin}>Create an account</button>
                                 </div>
+                                  <div className="text-end mt-3"> {/* Align to right with margin-top */}
+                                                        <Link
+                                                            to="/forgot-password"
+                                                            className="text-decoration-none"
+                                                            style={{
+                                                                color: '#6c757d',
+                                                                transition: 'all 0.3s ease',
+                                                                fontWeight: '500',
+                                                                fontSize: '0.9rem',
+                                                                display: 'inline-block',
+                                                                position: 'relative',
+                                                                paddingBottom: '2px'
+                                                            }}
+                                                            onMouseEnter={(e) => e.target.style.color = '#0d6efd'}
+                                                            onMouseLeave={(e) => e.target.style.color = '#6c757d'}
+                                                        >
+                                                            Forgot Password?
+                                                            <span
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    bottom: 0,
+                                                                    left: 0,
+                                                                    width: '0%',
+                                                                    height: '1px',
+                                                                    backgroundColor: '#0d6efd',
+                                                                    transition: 'width 0.3s ease'
+                                                                }}
+                                                                className="hover-underline"
+                                                            />
+                                                        </Link>
+                                                    </div>
                         </div>
 
                     </div>
