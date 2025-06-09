@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
@@ -16,7 +16,9 @@ L.Icon.Default.mergeOptions({
 });
 
 const Search = (props) => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
+    const location = useLocation();
+    // console.log(location.pathname);
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -32,7 +34,14 @@ const Search = (props) => {
     const markerRef = useRef(null);
     const wrapperRef = useRef(null);
     const geocoderRef = useRef(L.Control.Geocoder.nominatim());
-
+    useEffect(()=>{
+        setQuery('');
+        setSearchQuery('');
+        setSuggestions([]);
+        window.history.replaceState({}, '');
+        // if (location.state?.replaceSearch) {
+        // }
+    },[location])
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedQuery(query);
@@ -56,7 +65,7 @@ const Search = (props) => {
             const response = await fetch(`http://localhost:7000/api/search-cities?query=${encodeURIComponent(query)}`);
             const data = await response.json();
 
-            const cityState = data.map(place=>{
+            const cityState = data.map(place => {
                 const parts = place.name.split(',');
                 const city = parts[0].trim();
                 const state = place.state.split(',')[0].trim();
@@ -64,9 +73,9 @@ const Search = (props) => {
                     display_name: `${city}, ${state}`,
                 };
             })
-            console.log("City State", cityState);
+            // console.log("City State", cityState);
             setSuggestions(cityState);
-            
+
 
 
 
@@ -251,11 +260,11 @@ const Search = (props) => {
     }, [mapClickCounter]);
     const handleMapSelectionDone = () => {
         if (selectedLocation === null) {
-            console.log('No location selected', selectedLocation);
+            // console.log('No location selected', selectedLocation);
             setSearchQuery('');
             return;
         }
-        console.log('Selected Location:', selectedLocation.name);
+        // console.log('Selected Location:', selectedLocation.name);
         if (selectedLocation.name === 'Unknown location') {
             setSearchQuery('');
             alert('invalid location selected');
@@ -307,6 +316,12 @@ const Search = (props) => {
             </button> */}
 
             <button
+                style={{
+                    position: 'relative',   // important: NOT fixed or absolute here
+                    zIndex: 1,               // lower than dropdown
+                    width: '100%',           // responsive
+                    marginTop: '3px'
+                }}
                 className='btn btn-primary ms-2'
                 onClick={() => setShowMap(true)}
             >

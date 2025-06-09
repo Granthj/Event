@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import ReactDom from 'react-dom/client';
+import './css/App.css'
 import Navbar from './component/navbar.js';
 import Form from './component/formm.js';
 import New from './component/new.js';
@@ -23,6 +24,9 @@ import Eventitem from './component/Eventitem.js';
 import PaymentGateway from './component/PaymentGateway.js';
 import { PaymentProvider, PaymentContext } from './utils/paymentId.js';
 import ForgotPassword from './component/ForgotPassword.js';
+import SignUp from './component/SignUp.js';
+import Login from './component/Login.js';
+import Error from './component/Error.js'
 // import NewPassword from './component/NewPassword.js';
 const AdminPanel = () => {
     return (
@@ -47,21 +51,27 @@ const AppLayOut = () => {
                         city: city,
                         state: state,
                     }
+                    
                 }
             });
     // console.log("Selected city:", cityData);
         // You can pass this data to a map component, global state, etc.
     };
     return (
-        <div>
+        <div className="d-flex flex-column min-vh-100">
 
             <AuthProvider>
                 <PaymentProvider>
+                    <div className="app-wrapper">
                     <Navbar onCitySelected={handleCitySelected} />
                     {/* <YourBooking/> */}
-                    <Outlet />
-                    <New />
-                    <Footer />
+                    <main className="flex-grow-1">
+                        <Outlet />
+                        {/* <New /> */}
+                    </main>
+                   
+                        <Footer />
+                    </div>
                 </PaymentProvider>
             </AuthProvider>
         </div>
@@ -79,7 +89,11 @@ const appRoute = createBrowserRouter(
                     index: true,
                 },
                 {
-                    path: ":city",
+                    path:"*",
+                    element:<Error/>
+                },
+                {
+                    path: "/:city",
                     element: <EventsPage />,
                 },
                 {
@@ -101,9 +115,12 @@ const appRoute = createBrowserRouter(
                 },
                 {
                     path: "/login",
-                    element: <Form />,
-                    
+                    element: <Private path={"/login"} />,
                 },
+                {
+                    path:"/signup",
+                    element:<SignUp/>
+                }
             ],
         },
         {
@@ -120,6 +137,10 @@ const appRoute = createBrowserRouter(
                 }
             ]
         },
+        {
+            path:"*",
+            element:<Error/>
+        }
     ])
 // Ensure ReactDom.createRoot is only called once
 const container = document.getElementById('root');

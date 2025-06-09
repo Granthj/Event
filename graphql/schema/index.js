@@ -151,7 +151,11 @@ module.exports = buildSchema(`
            getCart(customerId:ID!):[cart!]!
            customerBooking(customerId:ID!):[booked!]!
            sendOtp(email:String!):String!
+           sendOtpforNewEmail(email:String!):String
+           sendOtpNewAccount(email:String!):String
            verifyOtp(otp:String!,email:String!):session!
+           verifyOtpEmail(otp:String!,email:String,oldEmail:String!):Boolean
+           verifyOtpNewAccount(otp:String!,email:String!):Boolean
            eventsByLocation(city:String!,state:String!):[event!]!
         }
         type RootMutation{

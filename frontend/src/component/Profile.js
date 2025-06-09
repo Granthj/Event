@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { AuthContext } from '../utils/authContext';
 import '../css/profile.css';
+import EmailChange from './EmailChange';
 const Profile = () => {
     const { token, customerId } = useContext(AuthContext);
     const [showPassword, setShowPassword] = useState(false);
@@ -9,7 +10,8 @@ const Profile = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-    const [emailError, setEmailError] = useState(false);
+    // const [emailError, setEmailError] = useState(false);
+    const [emailchange,setEmailChange] = useState(false);
     const [updated, setUpdated] = useState(false);
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -65,6 +67,9 @@ const Profile = () => {
         })
 
     }, [])
+    const changeEmail=()=>{
+        setEmailChange(true);
+    }
     function formatTimestampToDateInput(timestampString) {
         // Convert the string to a number
         const timestamp = Number(timestampString);
@@ -194,6 +199,7 @@ const Profile = () => {
 
     return (
         <>
+        {!emailchange?(<div>
             <div className="container mt-5">
                 <div className="row justify-content-center">
                     <div className="col-md-6">
@@ -257,14 +263,26 @@ const Profile = () => {
                                             </label>
                                         </div>
                                     </div>
-
                                     <div className="mb-3">
                                         <label htmlFor="email" className="form-label">Email address</label>
-                                        <input type="email" className={`form-control ${emailError ? 'is-invalid' : ''}`} id="email" name="email"
-                                            placeholder="Enter email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                        />
+                                        <div className="input-group">
+                                            <input
+                                                type="email"
+                                                className="form-control"
+                                                id="email"
+                                                name="email"
+                                                placeholder="Enter email"
+                                                value={formData.email}
+                                                disabled
+                                            />
+                                            <button
+                                                className="btn btn-danger"
+                                                type="button"
+                                                onClick={changeEmail}
+                                            >
+                                                Change
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="mb-3">
@@ -360,18 +378,18 @@ const Profile = () => {
                                                 className="d-flex flex-column justify-content-center align-items-center"
                                                 style={{ minHeight: "100px" }} // Adjust height as needed
                                             >
-                                            <div className="d-flex align-items-center" style={{ height: "2rem" }}>
-                                                {[0, 0.3, 0.6].map((delay) => (
-                                                    <div
-                                                        key={delay}
-                                                        className="bouncing-dot"
-                                                        style={{ animationDelay: `${delay}s` }}
-                                                    />
-                                                ))}
-                                            </div>
-                                            <span className="ms-2">Submitting...</span></div>
+                                                <div className="d-flex align-items-center" style={{ height: "2rem" }}>
+                                                    {[0, 0.3, 0.6].map((delay) => (
+                                                        <div
+                                                            key={delay}
+                                                            className="bouncing-dot"
+                                                            style={{ animationDelay: `${delay}s` }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                <span className="ms-2">Submitting...</span></div>
                                         </>) : (<button type="submit" className="btn btn-primary">Update Profile</button>)}
-                                        
+
                                     </div>
                                 </form>
                             </div>
@@ -393,6 +411,7 @@ const Profile = () => {
                         </Button>
                     </Modal.Footer>
                 </Modal>)}
+                </div>):(<EmailChange email={formData.email}/>)}
         </>
     )
 }
