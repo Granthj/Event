@@ -191,7 +191,6 @@ const Profile = () => {
 
             })
             .catch(err => {
-                console.log(err.message, "error");
                 setPasswordError(true);
             })
 
@@ -199,12 +198,12 @@ const Profile = () => {
 
     return (
         <>
-        {!emailchange?(<div>
+        {!emailchange?(<div style={{ marginBottom:"50px"}}>
             <div className="container mt-5">
                 <div className="row justify-content-center">
                     <div className="col-md-6">
                         <div className="card">
-                            <div className="card-header bg-primary text-white">
+                            <div className="card-header bg-dark text-white">
                                 <h4 className="mb-0">Update Profile</h4>
                             </div>
                             <div className="card-body">
@@ -276,7 +275,7 @@ const Profile = () => {
                                                 disabled
                                             />
                                             <button
-                                                className="btn btn-danger"
+                                                className="btn btn-dark"
                                                 type="button"
                                                 onClick={changeEmail}
                                             >
@@ -388,7 +387,7 @@ const Profile = () => {
                                                     ))}
                                                 </div>
                                                 <span className="ms-2">Submitting...</span></div>
-                                        </>) : (<button type="submit" className="btn btn-primary">Update Profile</button>)}
+                                        </>) : (<button type="submit" className="btn btn-dark">Update Profile</button>)}
 
                                     </div>
                                 </form>

@@ -34,14 +34,14 @@ const Search = (props) => {
     const markerRef = useRef(null);
     const wrapperRef = useRef(null);
     const geocoderRef = useRef(L.Control.Geocoder.nominatim());
-    useEffect(()=>{
+    useEffect(() => {
         setQuery('');
         setSearchQuery('');
         setSuggestions([]);
         window.history.replaceState({}, '');
         // if (location.state?.replaceSearch) {
         // }
-    },[location])
+    }, [location])
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedQuery(query);
@@ -282,15 +282,14 @@ const Search = (props) => {
         }
     };
     return (
-        <div className="d-flex align-items-center">
-            <div className='position-relative' style={{ minWidth: '250px' }} ref={wrapperRef}>
+        <div className="d-flex align-items-start" style={{ gap: '0.5rem' }}>
+            <div className='position-relative flex-grow-1' style={{ minWidth: '25px' }} ref={wrapperRef}>
                 <input
                     type='text'
                     className='form-control'
                     placeholder='Search city...'
                     value={searchQuery}
                     onChange={handleChange}
-                    // onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
                     onFocus={() => setShowSuggestions(true)}
                     autoComplete='off'
                 />
@@ -309,20 +308,15 @@ const Search = (props) => {
                     </ul>
                 )}
             </div>
-            {/* <button
-                className='btn btn-light ms-3'
-            >
-                 Search
-            </button> */}
 
             <button
+                className='btn btn-primary'
                 style={{
-                    position: 'relative',   // important: NOT fixed or absolute here
-                    zIndex: 1,               // lower than dropdown
-                    width: '100%',           // responsive
-                    marginTop: '3px'
+                    whiteSpace: 'nowrap',
+                    height: '38px', // match input height (adjust if needed)
+                    padding: '0 12px',
+                    minWidth:'25px'
                 }}
-                className='btn btn-primary ms-2'
                 onClick={() => setShowMap(true)}
             >
                 <i className="fas fa-map-marker-alt me-1"></i> Map
@@ -350,7 +344,7 @@ const Search = (props) => {
                             <div className="modal-footer">
                                 <button
                                     type="button"
-                                    className="btn btn-primary"
+                                    className="btn btn-dark"
                                     onClick={() => {
                                         setMapClickCounter(prev => prev + 1);
                                         setShouldCallHandleMapSelectionDone(true);
@@ -361,7 +355,7 @@ const Search = (props) => {
                                 </button>
                                 <button
                                     type="button"
-                                    className="btn btn-secondary"
+                                    className="btn btn-dark"
                                     onClick={() => {
                                         setShowMap(false);
                                         setSelectedLocation(null);

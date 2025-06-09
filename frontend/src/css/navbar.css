@@ -28,7 +28,21 @@ body {
   margin: 0;
   padding: 0;
 }
+.navbar-nav .nav-link.active {
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+.custom-auth-btn {
+  background-color: #e3f2fd;
+  color: #0d6efd;
+  border: none;
+  transition: all 0.3s ease;
+}
 
+.custom-auth-btn:hover {
+  background-color: #d0e7fb; /* slightly darker on hover */
+  color: #084298;           /* slightly deeper blue */
+}
 .container-fluid {
   padding-left: 1rem;
   padding-right: 1rem;

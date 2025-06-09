@@ -120,7 +120,7 @@ const YourBooking = () => {
                             </p>
                             <div className="d-flex gap-2 mt-3">
                                  <button
-                                        className="btn btn-outline-danger btn-sm px-3 py-0"
+                                        className="btn btn-outline-dark btn-sm px-3 py-0"
                                         onClick={() => cancelBooking(val.bookingId)}
                                     >
                                         Cancel Booking
