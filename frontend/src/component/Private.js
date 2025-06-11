@@ -1,6 +1,5 @@
 import { useContext,useEffect } from "react"
 import Error from "./Error";
-import Auth from "./Auth";
 import { AuthContext } from "../utils/authContext"
 import { AdminAuthContext } from "../utils/adminAuth"
 import { Outlet, useNavigate, Navigate } from 'react-router-dom';

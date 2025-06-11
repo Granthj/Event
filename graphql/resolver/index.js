@@ -20,7 +20,7 @@ const razorpay = new Razorpay({
     key_id: 'rzp_test_u2a8oM3ko4mvF2',
     key_secret: 'FFZoe1Vpd6QMG5vzeXMkTULx'
 });
-const OtpSameCode = async (customerEmail,value) => {
+const OtpSameCode = async (customerEmail, value) => {
     const otp = otpGenerator.generate(4, {
         digits: true,
         upperCaseAlphabets: false,
@@ -367,7 +367,7 @@ module.exports = {
             throw new Error('Email not found');
         }
         const value = "forgot password"
-        OtpSameCode(customerEmail,value);
+        OtpSameCode(customerEmail, value);
         return 'otp sent successfully';
 
     },
@@ -378,18 +378,18 @@ module.exports = {
             throw new Error('Email already used!');
         }
         const value = "update email"
-        OtpSameCode(customerEmail,value);
+        OtpSameCode(customerEmail, value);
         return 'otp sent successfully';
 
     },
-    sendOtpNewAccount:async (args) => {
+    sendOtpNewAccount: async (args) => {
         const customerEmail = args.email;
         const emailExist = await Customer.findOne({ email: customerEmail });
         if (emailExist) {
             throw new Error('Email already used!');
         }
         const value = "to create account"
-        OtpSameCode(customerEmail,value);
+        OtpSameCode(customerEmail, value);
         return 'otp sent successfully';
     },
     verifyOtp: async (args) => {
@@ -437,7 +437,7 @@ module.exports = {
         return true;
     },
     verifyOtpNewAccount: async (args) => {
-         const { otp, email } = args;
+        const { otp, email } = args;
         const otpData = await Otp.findOne({ email: email, code: otp });
         if (!otpData) {
             throw new Error('Invalid OTP');
@@ -516,6 +516,32 @@ module.exports = {
 
         fetchEvent.bookedBy.push(customers);
         const eventResult = await fetchEvent.save();
+        // console.log(fetchEvent.title, fetchEvent.date, fetchEvent.price, "DETAILS OF EVENT")
+        // console.log(customers.firstname, customers.lastname, "DETAILS OF CUSTOMER");
+        // console.log(req.email)
+        const city = fetchEvent.city.charAt(0).toUpperCase() + fetchEvent.city.slice(1).toLowerCase();
+        const state = fetchEvent.state.charAt(0).toUpperCase() + fetchEvent.state.slice(1).toLowerCase();
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: req.email,
+            subject: `Booking Confirmation: ${fetchEvent.title}`,
+            html: `<div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+                        <h2 style="color: #0d6efd;">🎉 Booking Confirmed!</h2>
+                        <p>Hi <strong>${customers.firstname + ' ' + customers.lastname}</strong>,</p>
+                        <p>Thank you for booking your event with us. Here are your booking details:</p>
+                        <ul style="list-style-type: none; padding-left: 0;">
+                            <li><strong>Event:</strong> ${fetchEvent.title}</li>
+                            <li><strong>Price:</strong> ₹${fetchEvent.price}</li>
+                            <li><strong>Date:</strong> ${fetchEvent.date}</li>
+                            <li><strong>Place:</strong> ${city+','+state}</li>
+                            <li><strong>Address:</strong> ${fetchEvent.address}</li>
+                        </ul>
+                        <p>We look forward to seeing you at the event!</p>
+                        <p style="margin-top: 20px;">Best regards,<br>Yourbookingsatyourspace</p>
+                        </div>
+  `,
+        };
+        await transporter.sendMail(mailOptions);
 
         return {
             ...result._doc, _id: result.id,

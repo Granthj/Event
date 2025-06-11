@@ -3,7 +3,6 @@ import Modal from './Modals';
 import {AuthContext} from '../utils/authContext';
 import { useNavigate } from 'react-router-dom';
 import { BrowserRouter,Routes,Route } from 'react-router-dom';
-import Auth from './Auth';
 import AdminEventList from './AdminEventList';
 
 const Dashboard = () => {

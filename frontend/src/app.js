@@ -6,9 +6,6 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import ReactDom from 'react-dom/client';
 import './css/App.css'
 import Navbar from './component/navbar.js';
-import Form from './component/formm.js';
-import New from './component/new.js';
-// import Auth from './component/Auth.js';
 import EventsPage from './component/Events.js';
 import YourBooking from './component/YourBooking.js';
 import Footer from './component/Footer.js';

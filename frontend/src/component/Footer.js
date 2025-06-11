@@ -1,13 +1,13 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { 
-//   Facebook, 
-//   Twitter, 
-//   Instagram, 
+import {
+  //   Facebook, 
+  //   Twitter, 
+  //   Instagram, 
   Linkedin,
-  GeoAlt, 
-  Envelope, 
-  Telephone 
+  GeoAlt,
+  Envelope,
+  Telephone
 } from 'react-bootstrap-icons';
 
 const Footer = () => {
@@ -19,13 +19,20 @@ const Footer = () => {
           <Col md={4} className="mb-4 mb-md-0">
             <h5 className="text-white">Company Name</h5>
             <p className="text-light">
-              Providing quality services since 2010. We specialize in creating amazing digital experiences.
+              Book events your way, at your space — Trusted since 2025.
             </p>
             <div className="social-icons">
               {/* <a href="#" className="text-white me-2"><Facebook size={20} /></a>
               <a href="#" className="text-white me-2"><Twitter size={20} /></a>
               <a href="#" className="text-white me-2"><Instagram size={20} /></a> */}
-              <a href="" className="text-white"><Linkedin size={20} /></a>
+              <a
+                href="http://linkedin.com/in/granth-das-aa9470287"
+                className="text-white"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Linkedin size={20} />
+              </a>
             </div>
           </Col>
 
