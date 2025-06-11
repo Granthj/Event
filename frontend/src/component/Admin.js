@@ -2,7 +2,6 @@ import react, { useRef, useState , useContext} from 'react';
 import {AuthContext} from '../utils/authContext';
 import { useNavigate } from 'react-router-dom';
 import { BrowserRouter,Routes,Route } from 'react-router-dom';
-import Auth from '../component/Auth';
 import { AdminAuthContext } from '../utils/adminAuth';
 
 const Admin = ()=>{
