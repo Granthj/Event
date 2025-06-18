@@ -5,7 +5,7 @@ import { PaymentContext } from '../utils/paymentId';
 const PaymentGateway = () => {
     const [Order, setOrder] = useState();
     const [PaymentId, setPaymentId] = useState();
-    const { token } = useContext(AuthContext);
+    const setAuth = useContext(AuthContext);
     const { paymentId, setpaymentId } = useContext(PaymentContext);
 
     function loadScript(src) {
@@ -47,8 +47,8 @@ const PaymentGateway = () => {
             body: JSON.stringify(paymentQuery),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': "Bearer " + token
-            }
+            },
+            credentials: 'include'
         });
         const order = await fetchData.json();
 

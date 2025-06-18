@@ -17,8 +17,8 @@ const { default: ObjectID } = require('bson-objectid');
 // let ObjectID = require("bson-objectid");
 let objectId = new mongoose.Types.ObjectId();
 const razorpay = new Razorpay({
-    key_id: 'rzp_test_u2a8oM3ko4mvF2',
-    key_secret: 'FFZoe1Vpd6QMG5vzeXMkTULx'
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 const OtpSameCode = async (customerEmail, value) => {
     const otp = otpGenerator.generate(4, {
@@ -31,7 +31,7 @@ const OtpSameCode = async (customerEmail, value) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: customerEmail,
-        subject: 'Your OTP Code',
+        subject: `'Your OTP Code' +  ${new Date().toLocaleTimeString()}`,
         text: `Your OTP code for ${value} is ${otp}. It will expire in 1 minutes.`,
     };
     const otpDb = new Otp({
@@ -41,7 +41,8 @@ const OtpSameCode = async (customerEmail, value) => {
         ttlAt: new Date(Date.now() + 30 * 60 * 1000),
     })
     await otpDb.save();
-    await transporter.sendMail(mailOptions);
+    const response = await transporter.sendMail(mailOptions);
+    console.log(response,'email')
 }
 const events = async (eventId) => {
     const event = await Event.find({ _id: { $in: eventId } });
@@ -93,7 +94,8 @@ module.exports = {
         const objectIdString = objectID.toString();
         return { ...customerID._doc }
     },
-    paymentGateway: async (args, req, res) => {
+    paymentGateway: async (args,context) => {
+        const { req, res } = context;
         if (req.auth) {
 
             const event = await Event.findOne({ _id: args.eventId });
@@ -192,6 +194,7 @@ module.exports = {
             city: args.eventInput.city,
             state: args.eventInput.state,
             address: args.eventInput.address,
+            image:args.eventInput.image
         })
         let createdEvent;
         return event.save()
@@ -249,7 +252,11 @@ module.exports = {
             }
         }
     },
-    cartEventDelete: async (args, req) => {
+    cartEventDelete: async (args, context) => {
+        const { req } = context;
+        if (!req.auth) {
+            throw new Error("You are not authenticated");
+        }
         const customerData = await Customer.findById(args.cartCancelInput.customerId);
         const cartid = customerData.cart.find(item => item._id.toString() === args.cartCancelInput.cartId);
         if (!cartid) {
@@ -262,7 +269,11 @@ module.exports = {
             return { ...eventData._doc, _id: cartid._id, eventId: eventData._id, customerId: response._id, }
         }
     },
-    getCart: async (args, req) => {
+    getCart: async (args, context) => {
+        const { req } = context;
+        if (!req.auth) {
+            throw new Error("You are not authenticated");
+        }
         const customerData = await Customer.findById(args.customerId);
         const cartArray = customerData.cart.map(cart => {
             return { eventId: cart.eventId, _id: cart._id }
@@ -282,16 +293,21 @@ module.exports = {
             objectofBooking[`desc`] = sortedEvents[i].desc
             objectofBooking[`date`] = sortedEvents[i].date
             objectofBooking[`city`] = sortedEvents[i].city
+            objectofBooking[`state`] = sortedEvents[i].state
             objectofBooking[`address`] = sortedEvents[i].address
+            objectofBooking[`image`] = sortedEvents[i].image
             arrayofObject.push(objectofBooking);
             objectofBooking = {};
         }
-
         return arrayofObject.map(result => {
             return { ...result }
         })
     },
-    customerBooking: async (args) => {
+    customerBooking: async (args,context) => {
+        const { req } = context;
+        if (!req.auth) {
+            throw new Error("You are not authenticated");
+        }
         let array = [];
         let object = [];
         const customerData = await Customer.findById(args.customerId);
@@ -310,6 +326,10 @@ module.exports = {
             object[`price`] = result[i].price;
             object[`desc`] = result[i].desc;
             object[`date`] = result[i].date;
+            object[`image`] = result[i].image;
+            object[`city`] = result[i].city;
+            object[`state`] = result[i].state;
+            object[`address`] = result[i].address;
             object[`bookingId`] = bookings[i]._id;
             object[`createdAt`] = bookings[i].createdAt
             array.push(object);
@@ -319,11 +339,19 @@ module.exports = {
             return { ...obj }
         })
     },
-    customerData: async (args, req) => {
+    customerData: async (args, context) => {
+        const { req } = context;
+        if (!req.auth) {
+            throw new Error("You are not authenticated");
+        }
         const customerinfo = await Customer.findOne({ _id: args.customerId });
         return { ...customerinfo._doc }
     },
-    updateCustomerData: async (args, req) => {
+    updateCustomerData: async (args, context) => {
+        const { req } = context;
+        if (!req.auth) {
+            throw new Error("You are not authenticated");
+        }
         let updateObj = {};
         const customerPassword = await Customer.findOne({ _id: args.updateCustomerInput.customerId });
         const isEqual = await bcrypt.compare(args.updateCustomerInput.password, customerPassword.password);
@@ -494,8 +522,11 @@ module.exports = {
             })
 
     },
-    addBooking: async (args, req) => {
-        // if(req.auth){
+    addBooking: async (args, context) => {
+        const { req } = context;
+        if (!req.auth) {
+            throw new Error("You are not authenticated");
+        }
         const fetchEvent = await Event.findOne({ _id: args.createBooking.eventId });
         // const fetchCustomer = await Customer.findOne({_id:args.createBooking.customerId});
         const fetchCustomer = req.customerId;
@@ -555,7 +586,8 @@ module.exports = {
 
         // }
     },
-    cancelBooking: async (args, req) => {
+    cancelBooking: async (args, context) => {
+        const { req } = context;
         if (req.auth) {
             const deletedBooking = await Booking.findOne({ _id: args.bookingId });
             console.log("bella chao", deletedBooking)
@@ -580,23 +612,43 @@ module.exports = {
         }
     },
 
-    login: async ({ email, password }) => {
+    login: async ({ email, password },context) => {
+        const { req,res } = context;
         const customer = await Customer.findOne({ email: email });
         if (!customer) {
             throw Error('Email is incorrect');
         }
         const isEqual = await bcrypt.compare(password, customer.password)
         if (!isEqual) throw Error('Password is incorrect');
-
+        
         const token = jwt.sign({ customerId: customer.id, email: customer.email }, 'Iamgood', {
             expiresIn: '1h'
         });
-        // const decoded = jwt.decode(token);
-        // if (!decoded) {
-        //     throw Error('Failed to decode JWT');
-        // }                                       
-        return { CustomerId: customer.id, token: token, tokenExpiration: 1, Email: customer.email }
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false, // Set to true in production (HTTPS only)
+            sameSite: 'Lax',
+            maxAge: 60 * 60 * 1000 // 1 hour
+        });                                      
+        console.log(customer.email,customer.id,"heheh")
+        return { CustomerId: customer.id, Email: customer.email,message:"Login Successful" }
 
+    },
+    checkLoggedIn: async (args, context) => {
+        const { req } = context;
+        const { email,CustomerId } = args;
+        if (!req.auth) {
+            throw new Error("You are not authenticated");
+        }
+        return{
+            CustomerId: req.customerId,
+            Email: req.email,
+        }
+    },        
+    logOut:async(args,context)=>{
+        const { req, res } = context;
+        res.clearCookie('token');
+        return {message:"Logout Successful"}
     },
     adminLogin: async ({ email, password }) => {
         const user = await User.findOne({ email: email });

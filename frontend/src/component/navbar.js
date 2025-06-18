@@ -34,17 +34,19 @@ const Navbar = (props) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-    const setAuthData = useContext(AuthContext);
-    const logout = useContext(AuthContext);
+    const setAuth = useContext(AuthContext);
+    const {logOut} = useContext(AuthContext);
     const navigate = useNavigate();
-    function logOut() {
-        setAuthData.setAuthData(null, null);
-        logout.logout();
+    function logout() {
+        
+        logOut();
         navigate('/');
     }
+    console.log("setAuth", setAuth.Email,setAuth.CustomerId);
     return (
         <>
             <nav className='navbar navbar-expand-lg  sticky-top' style={{ backgroundColor: "#0d6efd", minHeight: "60px" }}>
+
                 <div className='container-fluid d-flex justify-content-between align-items-center'>
                     <Link to="/">
                         <img
@@ -114,7 +116,7 @@ const Navbar = (props) => {
                     {/* Desktop view */}
                     <div className='d-none d-lg-flex align-items-center'>
                         <ul className='navbar-nav nav-pills nav-fill'>
-                            {setAuthData.token && (
+                            {setAuth.Email && setAuth.CustomerId && (
                                 <>
                                     <li className='nav-item'><NavLink to='/profile' className='nav-link'><strong>My Profile</strong></NavLink></li>
                                     <li className='nav-item'><NavLink to='/bookings' className='nav-link'><strong>Bookings</strong></NavLink></li>
@@ -123,8 +125,8 @@ const Navbar = (props) => {
                             )}
                         </ul>
                         <Search onCitySelected={props.onCitySelected} />
-                        {setAuthData.token ? (
-                            <button onClick={logOut} className='btn btn-light ms-3' style={{ color: "#0d6efd" }}><strong>Logout</strong></button>
+                        {setAuth.Email && setAuth.CustomerId ? (
+                            <button onClick={logout} className='btn btn-light ms-3' style={{ color: "#0d6efd" }}><strong>Logout</strong></button>
                         ) : (
                             <Link to='/login' className='btn btn-light ms-3' style={{ color: "#0d6efd" }}><strong>Login</strong></Link>
                         )}
@@ -141,7 +143,7 @@ const Navbar = (props) => {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <ul className='nav flex-column'>
-                        {setAuthData.token && (
+                        {setAuth.Email && setAuth.CustomerId && (
                             <>
                                 <li className='nav-item'>
                                     <NavLink to='/profile' className='nav-link' onClick={toggleDropdown}>My profile</NavLink>
@@ -158,8 +160,8 @@ const Navbar = (props) => {
                     <div className="my-2 mx-3">
                         <Search onCitySelected={props.onCitySelected} />
                     </div>
-                    {setAuthData.token ? (
-                        <button onClick={() => { toggleDropdown(); logOut(); }} className='btn btn-danger w-100' style={{
+                    {setAuth.Email && setAuth.CustomerId ? (
+                        <button onClick={() => { toggleDropdown(); logout(); }} className='btn btn-danger w-100' style={{
                             backgroundColor: "#e3f2fd",
                             color: "#0d6efd",
                             border: "none"

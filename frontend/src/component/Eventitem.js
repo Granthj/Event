@@ -9,6 +9,7 @@ import PaymentGateway from './PaymentGateway';
 import { AuthContext } from '../utils/authContext';
 import { PaymentContext } from '../utils/paymentId';
 import customer from '../../../model/customer';
+import { set } from '../../../model/cart';
 const { useNavigate } = require('react-router-dom');
 const Eventitem = (props) => {
     const [id, setId] = useState(null);
@@ -19,7 +20,7 @@ const Eventitem = (props) => {
     const [book, paymentBook] = useState(false);
     const [eventBooked, setEventBooked] = useState();
     const { paymentId, setpaymentId } = useContext(PaymentContext);
-    const { token, customerId } = useContext(AuthContext);
+    const setAuth = useContext(AuthContext);
     const { displayRazorpay } = PaymentGateway();
     const navigate = useNavigate();
     let queryForEvent;
@@ -29,7 +30,7 @@ const Eventitem = (props) => {
     const bookAnEvent = (id) => {
         setEventId(id);
         // console.log(id, "eventId", token, customerId)
-        if (token === null || token === undefined) {
+        if (setAuth.CustomerId === null || setAuth.Email === null) {
             navigate('/login')
             // alert("Please login to book an event");
         }
@@ -42,7 +43,7 @@ const Eventitem = (props) => {
             queryForEvent = {
                 query: `
                 mutation{
-                    addBooking(createBooking:{eventId:"${eventId}",customerId:"${customerId}"}){
+                    addBooking(createBooking:{eventId:"${eventId}",customerId:"${setAuth.CustomerId}"}){
                         _id
                         createdAt
                         
@@ -64,19 +65,19 @@ const Eventitem = (props) => {
                 body: JSON.stringify(queryForEvent),
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': "Bearer" + " " + token
-                }
+                },
+                credentials: 'include'
             }).then(response => {
                 return response.json();
             }).then(data => {
-                console.log(data, "killer")
+                // console.log(data, "killer")
             })
         }
 
     }, [paymentId])
 
     const saveInCart = (val) => {
-        if (!token && !customerId) {
+        if (setAuth.CustomerId === null && setAuth.Email === null) {
             navigate('/login');
             return;
         }
@@ -84,7 +85,7 @@ const Eventitem = (props) => {
         const queryForCart = {
             query: `
             mutation{
-                cartEvent(cartInput:{eventId:"${val}",customerId:"${customerId}"}){
+                cartEvent(cartInput:{eventId:"${val}",customerId:"${setAuth.CustomerId}"}){
                     _id
                     eventId
                     customerId
@@ -100,12 +101,12 @@ const Eventitem = (props) => {
             body: JSON.stringify(queryForCart),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': "Bearer" + " " + token
-            }
+            },
+            credentials: 'include'
         }).then(response => {
             return response.json();
         }).then(data => {
-            console.log(data, "cart")
+            // console.log(data, "cart")
         }).catch(e => {
             throw new Error(e);
         })
@@ -129,21 +130,26 @@ const Eventitem = (props) => {
 
     const event = props.events.map((val, i) => {
         return <div className="d-flex justify-content-center align-items-center" style={{ marginTop: "20px" }} key={i}>
-            <div className="card text-center shadow" style={{ width: '550px', position: 'relative' }}>
+            <div className="card text-center shadow" style={{ width: '700px', position: 'relative' }}>
                 {/* <i
             className="fa-regular fa-bookmark position-absolute top-0 end-0 m-2 text-danger"
             role="button"
             onClick={()=>saveInCart(val._id)}
             ></i> */}
                 <div className="row g-0">
-                    <div className="col-md-4">
-                        <img src="https://via.placeholder.com/150" className="card-img-top" alt="Event Image" />
+                    <div className="col-md-5 p-0">
+                        
+                            <img src={val.image || "https://via.placeholder.com/300x200.png?text=No+Image"}
+                                className="img-fluid h-100 w-100"
+                                style={{ objectFit: 'cover',maxHeight: '230px' }}
+                                alt="Event Image" />
+
                     </div>
-                    <div className="col-md-8">
+                    <div className="col-md-7">
                         <div className="card-body">
                             <h5 key={val._id} className="card-title">{val.title}</h5>
                             <p className="card-text text-muted small mb-2">{val.desc}</p>
-                            <p className="fw-bold text-dark mb-3">{val.price}</p>
+                            <p className="fw-bold text-dark mb-3">₹ {val.price}</p>
                             <p className="card-text text-muted small mb-2">
                                 <FontAwesomeIcon icon={faMapMarkerAlt} />{val.address}, {val.city}, {val.state}
                             </p>
@@ -177,7 +183,7 @@ const Eventitem = (props) => {
                 <hr className="w-25 mx-auto border-primary" />
             </div>
 
-            <li style={{ textAlign: "center", listStyleType: "none", marginBottom:"40px"}}>{event}</li>
+            <li style={{ textAlign: "center", listStyleType: "none", marginBottom: "40px" }}>{event}</li>
 
 
         </>

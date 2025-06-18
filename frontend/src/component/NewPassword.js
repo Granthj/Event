@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from "react-bootstrap";
 
 const NewPassword = (props) => {
-    console.log("tokin", props.token);
+    // console.log("tokin", props.token);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [newPassword, setNewPassword] = useState("");
@@ -52,7 +52,7 @@ const NewPassword = (props) => {
     }, [success]);
     const onClose = () => {
         setShow(false);      
-        navigate('/');       
+        navigate('/login');       
     }
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -62,11 +62,11 @@ const NewPassword = (props) => {
     }
 
     return (
-        <div className="container mt-5">
+        <div className="container mt-5" style={{ marginBottom: "100px" }}>
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card">
-                        <div className="card-header bg-primary text-white">
+                        <div className="card-header bg-dark text-white">
                             <h4 className="mb-0">Update Password</h4>
                         </div>
                         <div className="card-body">
@@ -140,7 +140,7 @@ const NewPassword = (props) => {
                                                 ))}
                                             </div>
                                             <span className="ms-2">Submitting...</span></div>
-                                    </>) : (<button type="submit" className="btn btn-primary">Update Password</button>)}
+                                    </>) : (<button type="submit" className="btn btn-dark">Update Password</button>)}
 
                                 </div>
                                 {successMessage && <Modal show={show} onHide={onClose} centered>

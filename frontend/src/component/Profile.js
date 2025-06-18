@@ -4,7 +4,7 @@ import { AuthContext } from '../utils/authContext';
 import '../css/profile.css';
 import EmailChange from './EmailChange';
 const Profile = () => {
-    const { token, customerId } = useContext(AuthContext);
+    const setAuth = useContext(AuthContext);
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -34,7 +34,7 @@ const Profile = () => {
         const getData = {
             query: `
             query{
-            customerData(customerId:"${customerId}"){
+            customerData(customerId:"${setAuth.CustomerId}"){
                 firstname
                 lastname
                 dob
@@ -49,8 +49,9 @@ const Profile = () => {
             body: JSON.stringify(getData),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': "Bearer" + " " + token
-            }
+                // 'Authorization': "Bearer" + " " + token
+            },
+            credentials: 'include'
         }).then(response => {
             return response.json();
         }).then(data => {
@@ -63,7 +64,7 @@ const Profile = () => {
                 gender: data.data.customerData.gender || '',
                 email: data.data.customerData.email || ''
             }));
-            console.log(data.data.customerData, "HELLO");
+            // console.log(data.data.customerData, "HELLO");
         })
 
     }, [])
@@ -139,7 +140,7 @@ const Profile = () => {
         const updateData = {
             query: `
             mutation{
-                updateCustomerData(updateCustomerInput:{customerId:"${customerId}",
+                updateCustomerData(updateCustomerInput:{customerId:"${setAuth.CustomerId}",
                 firstname:"${formData.firstname}",
                 lastname:"${formData.lastname}",
                 dob:"${formData.dob}",
@@ -161,8 +162,9 @@ const Profile = () => {
             body: JSON.stringify(updateData),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': "Bearer" + " " + token
-            }
+                // 'Authorization': "Bearer" + " " + token
+            },
+            credentials: 'include'
         })
             .then(response => {
                 return response.json();

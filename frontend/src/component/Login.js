@@ -9,7 +9,7 @@ const Login = ()=>{
     const [password,setPassword] = useState();
     const [showPassword,setShowPassword] = useState();
     const [isError,setIsError] = useState(false);
-    const { setAuthData } = useContext(AuthContext);
+    const { setAuth } = useContext(AuthContext);
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const referer = params.get("referer") || "/";
@@ -32,8 +32,7 @@ const Login = ()=>{
                 query{
                     login(email:"${email}",password:"${password}"){
                         CustomerId
-                        token
-                        tokenExpiration
+                        Email
                         }
                     }
             `
@@ -43,6 +42,7 @@ const Login = ()=>{
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify(query),
         }).then(response => {
             return response.json();
@@ -59,9 +59,10 @@ const Login = ()=>{
                 // throw new Error(data.errors[0].message);
             }
             else{
-                setAuthData(data.data.login.token, data.data.login.CustomerId);
-                localStorage.setItem('customerId', data.data.login.CustomerId);
-                localStorage.setItem('token', data.data.login.token);
+                console.log("DATAFROM COOKIE",data.data.login.CustomerId, data.data.login.Email);
+                setAuth(data.data.login.CustomerId, data.data.login.Email);
+                // localStorage.setItem('customerId', data.data.login.CustomerId);
+                // localStorage.setItem('token', data.data.login.token);
                 navigate(referer || "/");
                 // navigate("/");
             }

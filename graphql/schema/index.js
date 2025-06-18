@@ -18,6 +18,10 @@ module.exports = buildSchema(`
             price:Int!
             desc:String!
             date:String!
+            image:String!
+            city:String!
+            state:String!
+            address:String!
         }
         type event{
             _id:ID!
@@ -28,6 +32,7 @@ module.exports = buildSchema(`
             city:String!
             state:String!
             address:String!
+            image:String!
             bookedBy:[customer!]
         }
         type customerBookedAnEvent{
@@ -67,9 +72,12 @@ module.exports = buildSchema(`
             # Add other fields as needed
           }
         type auth{
-            CustomerId:ID
-            token:String!
-            tokenExpiration:Int!
+            CustomerId:ID!
+            Email:String!
+            message:String
+        }
+        type LogoutResponse{
+            message:String!
         }
         type adminAuth{
             UserId:ID
@@ -82,6 +90,10 @@ module.exports = buildSchema(`
             price:String!
             desc:String!
             date:String!
+            image:String!
+            city:String!
+            state:String!
+            address:String!
             bookingId:ID!
             createdAt:String!
         }
@@ -101,6 +113,7 @@ module.exports = buildSchema(`
             city:String!
             state:String!
             address:String!
+            image:String!
         }
         input inputBooking{
             eventId:ID!
@@ -145,6 +158,7 @@ module.exports = buildSchema(`
            booking:[booking!]!
            customer:[customer!]!
            login(email:String,password:String):auth
+           checkLoggedIn:auth
            adminLogin(email:String,password:String):adminAuth
            singleBooking:[singleBooking]!
            customerBookedAnEvent:customerBookedAnEvent!
@@ -159,6 +173,7 @@ module.exports = buildSchema(`
            eventsByLocation(city:String!,state:String!):[event!]!
         }
         type RootMutation{
+            logOut:LogoutResponse
             createEvent(eventInput:inputEvent):event
             createUser(userInput:inputUser):user
             createCustomer(customerInput:inputCustomer):customer

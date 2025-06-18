@@ -1,8 +1,8 @@
-import react, { useRef, useState , useContext,useEffect} from 'react';
+import react, { useRef, useState, useContext, useEffect } from 'react';
 import Modal from './Modals';
-import {AuthContext} from '../utils/authContext';
+import { AuthContext } from '../utils/authContext';
 import { useNavigate } from 'react-router-dom';
-import { BrowserRouter,Routes,Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AdminEventList from './AdminEventList';
 
 const Dashboard = () => {
@@ -14,23 +14,45 @@ const Dashboard = () => {
     const [city, setCity] = useState();
     const [State, set_State] = useState();
     const [address, setAddress] = useState();
-    const [value,setValue] = useState();
-    const [bool,setBool] = useState(false);
-    const [is,isSet] = useState(false);
+    const [image,setImage] = useState();
+    const [imageUrl,setImageUrl] = useState(null);
+    const [value, setValue] = useState();
+    const [bool, setBool] = useState(false);
+    const [is, isSet] = useState(false);
     function setModalHandler() {
         setState(true);
     }
     function closeHandler() {
         setState(false);
     }
+    const Upload = async ()=>{
+        const formData = new FormData();
+        formData.append('file',image)
+        const res = await fetch("http://localhost:7000/upload-img",{
+            method:'POST',
+            body:formData
+        })
+    //       if (!res.ok) {
+    //         const text = await res.text(); // get raw text to debug
+    //         throw new Error(`Upload failed: ${res.status} - ${text}`);
+    // }
+
+    const data = await res.json();
+    setImageUrl(data.imageUrl);
+    console.log(data.imageUrl);
+    }
     const valueConfirmHandler = (e) => {
         e.preventDefault();
+        if(imageUrl === null){
+            console.log('HELOO FROM RETURN')
+            return;
+        }
         let event = { title, price, date, desc };
         setState(false);
         const requestBody = {
             query: `
             mutation{
-                createEvent(eventInput:{title:"${title}",price:${price},desc:"${desc}",date:"${date}",city:"${city}",state:"${State}",address:"${address}"}){
+                createEvent(eventInput:{title:"${title}",price:${price},desc:"${desc}",date:"${date}",city:"${city}",state:"${State}",address:"${address}",image:"${imageUrl}"}){
                     title
                     price
                     desc
@@ -100,9 +122,9 @@ const Dashboard = () => {
     // }
     return (
         <>
-        <h1>HELLO</h1>
-            {state && <Modal close closeModal={closeHandler} confirm={valueConfirmHandler}>
-                <form >
+            <h1>HELLO</h1>
+            {state && <Modal close closeModal={closeHandler} confirm={valueConfirmHandler} >
+                <form encType="multipart/form-data">
                     <label htmlFor='title'>Title</label>
                     <input className="form-control" type="text" onChange={(e) => { setTitle(e.target.value) }}></input>
                     <br></br>
@@ -123,6 +145,10 @@ const Dashboard = () => {
                     <br></br>
                     <label htmlFor='description'>Description</label>
                     <textarea className="form-control" type="text" onChange={(e) => setDesc(e.target.value)}></textarea>
+                    <br></br>
+                    <label htmlFor='image'>Image</label>
+                    <input className="form-control" type="file" onChange={(e) => setImage(e.target.files[0])} />
+                    <button type="button" onClick={Upload}>upload</button>
                 </form>
             </Modal>}
             {<button className='btn btn-primary' onClick={setModalHandler}>Create Event</button>}

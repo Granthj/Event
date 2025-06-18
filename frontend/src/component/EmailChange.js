@@ -24,6 +24,7 @@ const EmailChange = (props) => {
         }).then(response => {
             return response.json();
         }).then(data => {
+            console.log(data,"in side otp")
             if (data.errors) {
                 const isOtpError = data.errors.some(err =>
                     err.message.toLowerCase().includes('OTP')
@@ -31,8 +32,7 @@ const EmailChange = (props) => {
                 throw new Error(data.errors[0].message);
             }
             else{
-                window.location.reload();
-
+                setShow(true)
             }
         }).catch(err => {
             setShow(true)
@@ -43,6 +43,7 @@ const EmailChange = (props) => {
     }
     const onClose=()=>{
         setShow(false);
+        window.location.reload();
     }
     const handleDelete = (e) => {
         if (e.key === 'Backspace') {

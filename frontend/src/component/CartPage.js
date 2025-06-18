@@ -4,74 +4,82 @@ import { Button, Modal } from 'react-bootstrap';
 import PaymentGateway from './PaymentGateway';
 import { PaymentContext } from '../utils/paymentId';
 import { useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTicketAlt, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { set } from 'mongoose';
 const CartPage = () => {
-    const { token, customerId } = useContext(AuthContext);
+    const setAuth = useContext(AuthContext);
     const [cartData, setCartData] = useState([]);
     const [show, setShow] = useState(false);
-    const [choosenData,setChoosenData] = useState();
-    const [confirm,setConfirm] = useState(false);
-    const {paymentId,setpaymentId} = useContext(PaymentContext);
-    const {displayRazorpay} = PaymentGateway();
+    const [choosenData, setChoosenData] = useState();
+    const [confirm, setConfirm] = useState(false);
+    const { paymentId, setpaymentId } = useContext(PaymentContext);
+    const { displayRazorpay } = PaymentGateway();
     const hasRunOnce = useRef(false);
-    
+
     // console.log(displayRazorpay,"ABCD")
     // const [close, setClose] = useState(true);
     // console.log(token, customerId, "token and customerId");
     const handleClose = () => setShow(false);
-    const handleConfirm = ()=>{
+    const handleConfirm = () => {
         displayRazorpay(choosenData.eventId);
         setShow(false);
     }
-    const fetchCartData = ()=>{    
-            const queryForCartData = {
-                query:
-                    `query {
-                    getCart(customerId:"${customerId}") {
+    const fetchCartData = () => {
+        const queryForCartData = {
+            query:
+                `query {
+                    getCart(customerId:"${setAuth.CustomerId}"){ 
                         _id
                         title
                         price
                         desc
                         date
+                        image
+                        city
+                        state
+                        address
                         eventId
             }
         }`
-            }
-            fetch('http://localhost:7000/graphql', {
-                method: "POST",
-                body: JSON.stringify(queryForCartData),
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'Authorization': "Bearer" + " " + token
-                }
-            }).then(response => {
-                return response.json();
-            }
-            ).then(data => {
-                if(data.data === null){
-                    console.log("No cart data found");
-                    return;
-                }
-                // console.log(data,"cart data")
-                setCartData(data.data.getCart);
-                
-            })
-        
         }
-        useEffect(() => {
-            fetchCartData();
-        }, []);
-        
-        useEffect(()=>{
-             if (!hasRunOnce.current) {
-                hasRunOnce.current = true;
-                return; // Skip the first run
+        fetch('http://localhost:7000/graphql', {
+            method: "POST",
+            body: JSON.stringify(queryForCartData),
+            headers: {
+                'Content-Type': 'application/json',
+                // 'Authorization': "Bearer" + " " + token
+            },
+            credentials: 'include'
+        }).then(response => {
+            return response.json();
+        }
+        ).then(data => {
+            console.log(data, "cart data")
+            if (data.data === null) {
+                console.log("No cart data found");
+                return;
             }
-            console.log(paymentId,"PaymentIIIDDDD")
-            if(paymentId){
+            setCartData(data.data.getCart);
+
+        })
+
+    }
+    useEffect(() => {
+        fetchCartData();
+    }, []);
+
+    useEffect(() => {
+        if (!hasRunOnce.current) {
+            hasRunOnce.current = true;
+            return; // Skip the first run
+        }
+        // console.log(paymentId,"PaymentIIIDDDD")
+        if (paymentId) {
             const queryForEvent = {
                 query: `
                 mutation{
-                    addBooking(createBooking:{eventId:"${choosenData.eventId}",customerId:"${customerId}"}){
+                    addBooking(createBooking:{eventId:"${choosenData.eventId}",customerId:"${setAuth.CustomerId}"}){
                         _id
                         createdAt
                         event{
@@ -91,89 +99,95 @@ const CartPage = () => {
                 body: JSON.stringify(queryForEvent),
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': "Bearer" + " " + token
-                }
+                },
+                credentials: 'include'
             }).then(response => {
                 return response.json();
             }).then(data => {
                 // console.log(data,"killer")
             })
         }
-        },[paymentId])
+    }, [paymentId])
     const onBook = (item) => {
         setChoosenData(item);
         setShow(true);
     }
-        const onRemove = (item) => {
-            console.log(item.title,item._id,"remove")
-            const queryForRemove = {
-                query: `
+    const onRemove = (item) => {
+        console.log(item.title, item._id, "remove")
+        const queryForRemove = {
+            query: `
                 mutation{
-                    cartEventDelete(cartCancelInput:{customerId:"${customerId}",cartId:"${item._id}"}){
+                    cartEventDelete(cartCancelInput:{customerId:"${setAuth.CustomerId}",cartId:"${item._id}"}){
                         _id
                         eventId
                     }
                 }`
-            }
-            fetch('http://localhost:7000/graphql', {
-                method: "POST",
-                body: JSON.stringify(queryForRemove),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': "Bearer" + " " + token
-                }
-            }).then(response => {
-                return response.json();
-            }).then(data => {
-                fetchCartData();
-            })
         }
-    
+        fetch('http://localhost:7000/graphql', {
+            method: "POST",
+            body: JSON.stringify(queryForRemove),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            fetchCartData();
+        })
+    }
+
 
     const cartArr = cartData.map((item) => {
 
         return (
+            <div key={item._id} className="d-flex justify-content-center">
+                <div className="card mb-4  shadow-sm" style={{ width: '550px' }}>
+                    <div className="row g-0">
+                        {/* Image on the left - takes 4 columns on md screens and up, full width on smaller screens */}
+                        <div className="col-md-6 p-3 d-flex align-items-center justify-content-center bg-light">
+                            <img
+                                src={item.image || "https://cdn.pixabay.com/photo/2016/11/29/09/08/cart-1867780_1280.png"}
+                                alt={item.title}
+                                className="img-fluid h-100 w-100"
+                                style={{ maxHeight: '200px', minHeight: '200px' }}
+                            />
+                        </div>
 
-            <div key={item._id} className="card mb-4 w-100 shadow-sm" style={{ width: '100%' }}>
-                <div className="row g-0">
-                    {/* Image on the left - takes 4 columns on md screens and up, full width on smaller screens */}
-                    <div className="col-md-4 p-3 d-flex align-items-center justify-content-center bg-light">
-                        <img
-                            src="https://cdn.pixabay.com/photo/2016/11/29/09/08/cart-1867780_1280.png"
-                            alt={item.title}
-                            className="img-fluid rounded"
-                            style={{ maxHeight: '200px', objectFit: 'contain' }}
-                        />
-                    </div>
+                        {/* Content on the right - takes 8 columns on md screens and up */}
+                        <div className="col-md-6">
+                            <div className="card-body h-100 w-100 d-flex flex-column ps-0">
+                                <h5 className="card-title">{item.title}</h5>
+                                <p className="card-text text-muted">{item.desc}</p>
 
-                    {/* Content on the right - takes 8 columns on md screens and up */}
-                    <div className="col-md-8">
-                        <div className="card-body h-100 d-flex flex-column">
-                            <h5 className="card-title">{item.title}</h5>
-                            <p className="card-text text-muted">{item.desc}</p>
-
-                            <div className="mt-auto">
-                                <p className="card-text fs-5">
-                                    <strong>Price:</strong> ${item.price}
-                                </p>
-                                <p className="card-text">
-                                    <small className="text-muted">
-                                        Date: {new Date(Number(item.date)).toLocaleDateString()}
-                                    </small>
-                                </p>
-                                <div className="d-flex gap-2 mt-3">
-                                    <button
-                                        className="btn btn-dark btn-sm px-3 py-0"
-                                        onClick={() => onBook(item)}
-                                    >
-                                        Book Now
-                                    </button>
-                                    <button
-                                        className="btn btn-outline-dark btn-sm px-3 py-0"
-                                        onClick={() => onRemove(item)}
-                                    >
-                                        Remove
-                                    </button>
+                                <div className="mt-auto">
+                                    <p className="card-text fs-5">
+                                        <strong>₹</strong> {item.price}
+                                    </p>
+                                    <p className="card-text">
+                                        <small className="text-muted">
+                                            Date: {new Date(Number(item.date)).toLocaleDateString()}
+                                        </small>
+                                    </p>
+                                    <p className="card-text text-muted small mb-2">
+                                        <FontAwesomeIcon icon={faMapMarkerAlt} /> {item.address.charAt(0).toUpperCase()+item.address.slice(1).toLowerCase()}, {''}
+                                         {item.city.charAt(0).toUpperCase()+item.city.slice(1).toLowerCase()},
+                                         {item.state.charAt(0).toUpperCase()+item.state.slice(1).toLowerCase()}
+                                    </p>
+                                    <div className="d-flex gap-2 mt-3">
+                                        <button
+                                            className="btn btn-dark btn-sm px-3 py-0"
+                                            onClick={() => onBook(item)}
+                                        >
+                                            Book Now
+                                        </button>
+                                        <button
+                                            className="btn btn-outline-dark btn-sm px-3 py-0"
+                                            onClick={() => onRemove(item)}
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -210,7 +224,7 @@ const CartPage = () => {
                 </div>
             </div>
 
-            {show&&<Modal show={show} onHide={handleClose} centered>
+            {show && <Modal show={show} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>{choosenData.title}</Modal.Title>
                 </Modal.Header>
@@ -224,7 +238,7 @@ const CartPage = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>}
-            
+
         </>
     );
 }

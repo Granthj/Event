@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 const Modal = (props)=>{
     return(
         <>
-        <div  tabindex="-1" style={{width:"300px",padding:"10px",margin:"10px 700px",border:"2px solid black"}}>
+        <div style={{width:"300px",padding:"10px",margin:"10px 700px",border:"2px solid black"}}>
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">

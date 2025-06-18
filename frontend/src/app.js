@@ -43,34 +43,34 @@ const AppLayOut = () => {
     const handleCitySelected = (cityData) => {
         const [city, state] = cityData.name.split(',').map(str => str.trim());
         navigate(`/${city}`, {
-                state: {
-                    location: {
-                        city: city,
-                        state: state,
-                    }
-                    
+            state: {
+                location: {
+                    city: city,
+                    state: state,
                 }
-            });
-    // console.log("Selected city:", cityData);
+
+            }
+        });
+        // console.log("Selected city:", cityData);
         // You can pass this data to a map component, global state, etc.
     };
     return (
         <div className="d-flex flex-column min-vh-100">
-
+            {/* 
             <AuthProvider>
-                <PaymentProvider>
-                    <div className="app-wrapper">
-                    <Navbar onCitySelected={handleCitySelected} />
-                    {/* <YourBooking/> */}
-                    <main className="flex-grow-1">
-                        <Outlet />
-                        {/* <New /> */}
-                    </main>
-                   
-                        <Footer />
-                    </div>
-                </PaymentProvider>
-            </AuthProvider>
+                <PaymentProvider> */}
+            <div className="app-wrapper">
+                <Navbar onCitySelected={handleCitySelected} />
+                {/* <YourBooking/> */}
+                <main className="flex-grow-1">
+                    <Outlet />
+                    {/* <New /> */}
+                </main>
+
+                <Footer />
+            </div>
+            {/* </PaymentProvider>
+            </AuthProvider> */}
         </div>
     )
 }
@@ -86,8 +86,8 @@ const appRoute = createBrowserRouter(
                     index: true,
                 },
                 {
-                    path:"*",
-                    element:<Error/>
+                    path: "*",
+                    element: <Error />
                 },
                 {
                     path: "/:city",
@@ -115,8 +115,8 @@ const appRoute = createBrowserRouter(
                     element: <Private path={"/login"} />,
                 },
                 {
-                    path:"/signup",
-                    element:<SignUp/>
+                    path: "/signup",
+                    element: <SignUp />
                 }
             ],
         },
@@ -135,8 +135,8 @@ const appRoute = createBrowserRouter(
             ]
         },
         {
-            path:"*",
-            element:<Error/>
+            path: "*",
+            element: <Error />
         }
     ])
 // Ensure ReactDom.createRoot is only called once
@@ -149,7 +149,11 @@ if (!container._reactRootContainer) {
 }
 
 root.render(
-    <RouterProvider router={appRoute} />
+    <AuthProvider>
+        <PaymentProvider>
+            <RouterProvider router={appRoute} />
+        </PaymentProvider>
+    </AuthProvider>
 );
 export default AppLayOut;
 
