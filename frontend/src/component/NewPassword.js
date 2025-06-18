@@ -4,11 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from "react-bootstrap";
 
 const NewPassword = (props) => {
-<<<<<<< HEAD
-    // console.log("tokin", props.token);
-=======
-    console.log("tokin", props.token);
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [newPassword, setNewPassword] = useState("");
@@ -56,11 +51,8 @@ const NewPassword = (props) => {
     }, [success]);
     const onClose = () => {
         setShow(false);      
-<<<<<<< HEAD
         navigate('/login');       
-=======
-        navigate('/');       
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
+
     }
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -70,19 +62,11 @@ const NewPassword = (props) => {
     }
 
     return (
-<<<<<<< HEAD
         <div className="container mt-5" style={{ marginBottom: "100px" }}>
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card">
                         <div className="card-header bg-dark text-white">
-=======
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-6">
-                    <div className="card">
-                        <div className="card-header bg-primary text-white">
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                             <h4 className="mb-0">Update Password</h4>
                         </div>
                         <div className="card-body">
@@ -156,11 +140,8 @@ const NewPassword = (props) => {
                                                 ))}
                                             </div>
                                             <span className="ms-2">Submitting...</span></div>
-<<<<<<< HEAD
                                     </>) : (<button type="submit" className="btn btn-dark">Update Password</button>)}
-=======
-                                    </>) : (<button type="submit" className="btn btn-primary">Update Password</button>)}
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
+
 
                                 </div>
                                 {successMessage && <Modal show={show} onHide={onClose} centered>

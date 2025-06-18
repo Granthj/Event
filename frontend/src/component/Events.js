@@ -17,11 +17,6 @@ const EventsPage = () => {
     const [key, setKey] = useState(null);
     const [show, setShow] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-<<<<<<< HEAD
-    // const { token, customerId } = useContext(AuthContext);
-=======
-    const { token, customerId } = useContext(AuthContext);
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
   
     useEffect(() => {
         if (citi !== city) {
@@ -41,10 +36,7 @@ const EventsPage = () => {
                   city
                   address
                   state
-<<<<<<< HEAD
                   image
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                 }
               }
             `,
@@ -61,10 +53,7 @@ const EventsPage = () => {
                   city
                   address
                   state
-<<<<<<< HEAD
                   image
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                   bookedBy {
                     email
                   }

@@ -18,13 +18,10 @@ module.exports = buildSchema(`
             price:Int!
             desc:String!
             date:String!
-<<<<<<< HEAD
             image:String!
             city:String!
             state:String!
             address:String!
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         }
         type event{
             _id:ID!
@@ -35,10 +32,7 @@ module.exports = buildSchema(`
             city:String!
             state:String!
             address:String!
-<<<<<<< HEAD
             image:String!
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             bookedBy:[customer!]
         }
         type customerBookedAnEvent{
@@ -96,13 +90,10 @@ module.exports = buildSchema(`
             price:String!
             desc:String!
             date:String!
-<<<<<<< HEAD
             image:String!
             city:String!
             state:String!
             address:String!
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             bookingId:ID!
             createdAt:String!
         }
@@ -122,10 +113,7 @@ module.exports = buildSchema(`
             city:String!
             state:String!
             address:String!
-<<<<<<< HEAD
             image:String!
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         }
         input inputBooking{
             eventId:ID!

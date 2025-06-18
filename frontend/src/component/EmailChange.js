@@ -24,10 +24,6 @@ const EmailChange = (props) => {
         }).then(response => {
             return response.json();
         }).then(data => {
-<<<<<<< HEAD
-            console.log(data,"in side otp")
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             if (data.errors) {
                 const isOtpError = data.errors.some(err =>
                     err.message.toLowerCase().includes('OTP')
@@ -35,12 +31,7 @@ const EmailChange = (props) => {
                 throw new Error(data.errors[0].message);
             }
             else{
-<<<<<<< HEAD
                 setShow(true)
-=======
-                window.location.reload();
-
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             }
         }).catch(err => {
             setShow(true)
@@ -51,10 +42,7 @@ const EmailChange = (props) => {
     }
     const onClose=()=>{
         setShow(false);
-<<<<<<< HEAD
         window.location.reload();
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     }
     const handleDelete = (e) => {
         if (e.key === 'Backspace') {

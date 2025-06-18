@@ -17,13 +17,8 @@ const { default: ObjectID } = require('bson-objectid');
 // let ObjectID = require("bson-objectid");
 let objectId = new mongoose.Types.ObjectId();
 const razorpay = new Razorpay({
-<<<<<<< HEAD
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET
-=======
-    key_id: 'rzp_test_u2a8oM3ko4mvF2',
-    key_secret: 'FFZoe1Vpd6QMG5vzeXMkTULx'
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
 });
 const OtpSameCode = async (customerEmail, value) => {
     const otp = otpGenerator.generate(4, {
@@ -36,11 +31,7 @@ const OtpSameCode = async (customerEmail, value) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: customerEmail,
-<<<<<<< HEAD
         subject: `'Your OTP Code' +  ${new Date().toLocaleTimeString()}`,
-=======
-        subject: 'Your OTP Code',
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         text: `Your OTP code for ${value} is ${otp}. It will expire in 1 minutes.`,
     };
     const otpDb = new Otp({
@@ -50,12 +41,8 @@ const OtpSameCode = async (customerEmail, value) => {
         ttlAt: new Date(Date.now() + 30 * 60 * 1000),
     })
     await otpDb.save();
-<<<<<<< HEAD
     const response = await transporter.sendMail(mailOptions);
     console.log(response,'email')
-=======
-    await transporter.sendMail(mailOptions);
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
 }
 const events = async (eventId) => {
     const event = await Event.find({ _id: { $in: eventId } });
@@ -107,12 +94,8 @@ module.exports = {
         const objectIdString = objectID.toString();
         return { ...customerID._doc }
     },
-<<<<<<< HEAD
     paymentGateway: async (args,context) => {
         const { req, res } = context;
-=======
-    paymentGateway: async (args, req, res) => {
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         if (req.auth) {
 
             const event = await Event.findOne({ _id: args.eventId });
@@ -211,10 +194,8 @@ module.exports = {
             city: args.eventInput.city,
             state: args.eventInput.state,
             address: args.eventInput.address,
-<<<<<<< HEAD
             image:args.eventInput.image
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
+
         })
         let createdEvent;
         return event.save()
@@ -272,15 +253,12 @@ module.exports = {
             }
         }
     },
-<<<<<<< HEAD
     cartEventDelete: async (args, context) => {
         const { req } = context;
         if (!req.auth) {
             throw new Error("You are not authenticated");
         }
-=======
-    cartEventDelete: async (args, req) => {
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
+
         const customerData = await Customer.findById(args.cartCancelInput.customerId);
         const cartid = customerData.cart.find(item => item._id.toString() === args.cartCancelInput.cartId);
         if (!cartid) {
@@ -293,15 +271,12 @@ module.exports = {
             return { ...eventData._doc, _id: cartid._id, eventId: eventData._id, customerId: response._id, }
         }
     },
-<<<<<<< HEAD
+
     getCart: async (args, context) => {
         const { req } = context;
         if (!req.auth) {
             throw new Error("You are not authenticated");
         }
-=======
-    getCart: async (args, req) => {
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         const customerData = await Customer.findById(args.customerId);
         const cartArray = customerData.cart.map(cart => {
             return { eventId: cart.eventId, _id: cart._id }
@@ -321,33 +296,22 @@ module.exports = {
             objectofBooking[`desc`] = sortedEvents[i].desc
             objectofBooking[`date`] = sortedEvents[i].date
             objectofBooking[`city`] = sortedEvents[i].city
-<<<<<<< HEAD
             objectofBooking[`state`] = sortedEvents[i].state
             objectofBooking[`address`] = sortedEvents[i].address
             objectofBooking[`image`] = sortedEvents[i].image
             arrayofObject.push(objectofBooking);
             objectofBooking = {};
         }
-=======
-            objectofBooking[`address`] = sortedEvents[i].address
-            arrayofObject.push(objectofBooking);
-            objectofBooking = {};
-        }
-
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         return arrayofObject.map(result => {
             return { ...result }
         })
     },
-<<<<<<< HEAD
+
     customerBooking: async (args,context) => {
         const { req } = context;
         if (!req.auth) {
             throw new Error("You are not authenticated");
         }
-=======
-    customerBooking: async (args) => {
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         let array = [];
         let object = [];
         const customerData = await Customer.findById(args.customerId);
@@ -366,13 +330,10 @@ module.exports = {
             object[`price`] = result[i].price;
             object[`desc`] = result[i].desc;
             object[`date`] = result[i].date;
-<<<<<<< HEAD
             object[`image`] = result[i].image;
             object[`city`] = result[i].city;
             object[`state`] = result[i].state;
             object[`address`] = result[i].address;
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             object[`bookingId`] = bookings[i]._id;
             object[`createdAt`] = bookings[i].createdAt
             array.push(object);
@@ -382,7 +343,6 @@ module.exports = {
             return { ...obj }
         })
     },
-<<<<<<< HEAD
     customerData: async (args, context) => {
         const { req } = context;
         if (!req.auth) {
@@ -396,13 +356,6 @@ module.exports = {
         if (!req.auth) {
             throw new Error("You are not authenticated");
         }
-=======
-    customerData: async (args, req) => {
-        const customerinfo = await Customer.findOne({ _id: args.customerId });
-        return { ...customerinfo._doc }
-    },
-    updateCustomerData: async (args, req) => {
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         let updateObj = {};
         const customerPassword = await Customer.findOne({ _id: args.updateCustomerInput.customerId });
         const isEqual = await bcrypt.compare(args.updateCustomerInput.password, customerPassword.password);
@@ -573,16 +526,11 @@ module.exports = {
             })
 
     },
-<<<<<<< HEAD
     addBooking: async (args, context) => {
         const { req } = context;
         if (!req.auth) {
             throw new Error("You are not authenticated");
         }
-=======
-    addBooking: async (args, req) => {
-        // if(req.auth){
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         const fetchEvent = await Event.findOne({ _id: args.createBooking.eventId });
         // const fetchCustomer = await Customer.findOne({_id:args.createBooking.customerId});
         const fetchCustomer = req.customerId;
@@ -642,12 +590,8 @@ module.exports = {
 
         // }
     },
-<<<<<<< HEAD
     cancelBooking: async (args, context) => {
         const { req } = context;
-=======
-    cancelBooking: async (args, req) => {
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         if (req.auth) {
             const deletedBooking = await Booking.findOne({ _id: args.bookingId });
             console.log("bella chao", deletedBooking)
@@ -672,19 +616,14 @@ module.exports = {
         }
     },
 
-<<<<<<< HEAD
     login: async ({ email, password },context) => {
         const { req,res } = context;
-=======
-    login: async ({ email, password }) => {
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         const customer = await Customer.findOne({ email: email });
         if (!customer) {
             throw Error('Email is incorrect');
         }
         const isEqual = await bcrypt.compare(password, customer.password)
         if (!isEqual) throw Error('Password is incorrect');
-<<<<<<< HEAD
         
         const token = jwt.sign({ customerId: customer.id, email: customer.email }, 'Iamgood', {
             expiresIn: '1h'
@@ -715,19 +654,7 @@ module.exports = {
         res.clearCookie('token');
         return {message:"Logout Successful"}
     },
-=======
 
-        const token = jwt.sign({ customerId: customer.id, email: customer.email }, 'Iamgood', {
-            expiresIn: '1h'
-        });
-        // const decoded = jwt.decode(token);
-        // if (!decoded) {
-        //     throw Error('Failed to decode JWT');
-        // }                                       
-        return { CustomerId: customer.id, token: token, tokenExpiration: 1, Email: customer.email }
-
-    },
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     adminLogin: async ({ email, password }) => {
         const user = await User.findOne({ email: email });
         if (!user)

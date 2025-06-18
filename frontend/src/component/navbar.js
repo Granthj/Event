@@ -34,7 +34,6 @@ const Navbar = (props) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-<<<<<<< HEAD
     const setAuth = useContext(AuthContext);
     const {logOut} = useContext(AuthContext);
     const navigate = useNavigate();
@@ -47,20 +46,6 @@ const Navbar = (props) => {
     return (
         <>
             <nav className='navbar navbar-expand-lg  sticky-top' style={{ backgroundColor: "#0d6efd", minHeight: "60px" }}>
-
-=======
-    const setAuthData = useContext(AuthContext);
-    const logout = useContext(AuthContext);
-    const navigate = useNavigate();
-    function logOut() {
-        setAuthData.setAuthData(null, null);
-        logout.logout();
-        navigate('/');
-    }
-    return (
-        <>
-            <nav className='navbar navbar-expand-lg  sticky-top' style={{ backgroundColor: "#0d6efd", minHeight: "60px" }}>
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                 <div className='container-fluid d-flex justify-content-between align-items-center'>
                     <Link to="/">
                         <img
@@ -130,11 +115,8 @@ const Navbar = (props) => {
                     {/* Desktop view */}
                     <div className='d-none d-lg-flex align-items-center'>
                         <ul className='navbar-nav nav-pills nav-fill'>
-<<<<<<< HEAD
                             {setAuth.Email && setAuth.CustomerId && (
-=======
-                            {setAuthData.token && (
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
+
                                 <>
                                     <li className='nav-item'><NavLink to='/profile' className='nav-link'><strong>My Profile</strong></NavLink></li>
                                     <li className='nav-item'><NavLink to='/bookings' className='nav-link'><strong>Bookings</strong></NavLink></li>
@@ -143,13 +125,8 @@ const Navbar = (props) => {
                             )}
                         </ul>
                         <Search onCitySelected={props.onCitySelected} />
-<<<<<<< HEAD
                         {setAuth.Email && setAuth.CustomerId ? (
                             <button onClick={logout} className='btn btn-light ms-3' style={{ color: "#0d6efd" }}><strong>Logout</strong></button>
-=======
-                        {setAuthData.token ? (
-                            <button onClick={logOut} className='btn btn-light ms-3' style={{ color: "#0d6efd" }}><strong>Logout</strong></button>
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                         ) : (
                             <Link to='/login' className='btn btn-light ms-3' style={{ color: "#0d6efd" }}><strong>Login</strong></Link>
                         )}
@@ -166,11 +143,7 @@ const Navbar = (props) => {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <ul className='nav flex-column'>
-<<<<<<< HEAD
                         {setAuth.Email && setAuth.CustomerId && (
-=======
-                        {setAuthData.token && (
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                             <>
                                 <li className='nav-item'>
                                     <NavLink to='/profile' className='nav-link' onClick={toggleDropdown}>My profile</NavLink>
@@ -187,13 +160,8 @@ const Navbar = (props) => {
                     <div className="my-2 mx-3">
                         <Search onCitySelected={props.onCitySelected} />
                     </div>
-<<<<<<< HEAD
                     {setAuth.Email && setAuth.CustomerId ? (
                         <button onClick={() => { toggleDropdown(); logout(); }} className='btn btn-danger w-100' style={{
-=======
-                    {setAuthData.token ? (
-                        <button onClick={() => { toggleDropdown(); logOut(); }} className='btn btn-danger w-100' style={{
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                             backgroundColor: "#e3f2fd",
                             color: "#0d6efd",
                             border: "none"

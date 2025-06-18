@@ -9,11 +9,7 @@ const Login = ()=>{
     const [password,setPassword] = useState();
     const [showPassword,setShowPassword] = useState();
     const [isError,setIsError] = useState(false);
-<<<<<<< HEAD
     const { setAuth } = useContext(AuthContext);
-=======
-    const { setAuthData } = useContext(AuthContext);
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const referer = params.get("referer") || "/";
@@ -36,12 +32,7 @@ const Login = ()=>{
                 query{
                     login(email:"${email}",password:"${password}"){
                         CustomerId
-<<<<<<< HEAD
                         Email
-=======
-                        token
-                        tokenExpiration
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                         }
                     }
             `
@@ -51,10 +42,7 @@ const Login = ()=>{
             headers: {
                 'Content-Type': 'application/json'
             },
-<<<<<<< HEAD
             credentials: 'include',
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             body: JSON.stringify(query),
         }).then(response => {
             return response.json();
@@ -71,16 +59,10 @@ const Login = ()=>{
                 // throw new Error(data.errors[0].message);
             }
             else{
-<<<<<<< HEAD
                 console.log("DATAFROM COOKIE",data.data.login.CustomerId, data.data.login.Email);
                 setAuth(data.data.login.CustomerId, data.data.login.Email);
                 // localStorage.setItem('customerId', data.data.login.CustomerId);
                 // localStorage.setItem('token', data.data.login.token);
-=======
-                setAuthData(data.data.login.token, data.data.login.CustomerId);
-                localStorage.setItem('customerId', data.data.login.CustomerId);
-                localStorage.setItem('token', data.data.login.token);
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                 navigate(referer || "/");
                 // navigate("/");
             }

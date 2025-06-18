@@ -30,13 +30,10 @@ const Event = new schema({
         type:String,
         required:true
     },
-<<<<<<< HEAD
     image:{
         type:String,
         required:true
     },
-=======
->>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     // creator:{
     //     type:mongoose.Schema.Types.ObjectId,
     //     ref:'User'
