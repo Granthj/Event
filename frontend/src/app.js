@@ -43,6 +43,7 @@ const AppLayOut = () => {
     const handleCitySelected = (cityData) => {
         const [city, state] = cityData.name.split(',').map(str => str.trim());
         navigate(`/${city}`, {
+<<<<<<< HEAD
             state: {
                 location: {
                     city: city,
@@ -52,10 +53,22 @@ const AppLayOut = () => {
             }
         });
         // console.log("Selected city:", cityData);
+=======
+                state: {
+                    location: {
+                        city: city,
+                        state: state,
+                    }
+                    
+                }
+            });
+    // console.log("Selected city:", cityData);
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         // You can pass this data to a map component, global state, etc.
     };
     return (
         <div className="d-flex flex-column min-vh-100">
+<<<<<<< HEAD
             {/* 
             <AuthProvider>
                 <PaymentProvider> */}
@@ -71,6 +84,23 @@ const AppLayOut = () => {
             </div>
             {/* </PaymentProvider>
             </AuthProvider> */}
+=======
+
+            <AuthProvider>
+                <PaymentProvider>
+                    <div className="app-wrapper">
+                    <Navbar onCitySelected={handleCitySelected} />
+                    {/* <YourBooking/> */}
+                    <main className="flex-grow-1">
+                        <Outlet />
+                        {/* <New /> */}
+                    </main>
+                   
+                        <Footer />
+                    </div>
+                </PaymentProvider>
+            </AuthProvider>
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         </div>
     )
 }
@@ -86,8 +116,13 @@ const appRoute = createBrowserRouter(
                     index: true,
                 },
                 {
+<<<<<<< HEAD
                     path: "*",
                     element: <Error />
+=======
+                    path:"*",
+                    element:<Error/>
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                 },
                 {
                     path: "/:city",
@@ -115,8 +150,13 @@ const appRoute = createBrowserRouter(
                     element: <Private path={"/login"} />,
                 },
                 {
+<<<<<<< HEAD
                     path: "/signup",
                     element: <SignUp />
+=======
+                    path:"/signup",
+                    element:<SignUp/>
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                 }
             ],
         },
@@ -135,8 +175,13 @@ const appRoute = createBrowserRouter(
             ]
         },
         {
+<<<<<<< HEAD
             path: "*",
             element: <Error />
+=======
+            path:"*",
+            element:<Error/>
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         }
     ])
 // Ensure ReactDom.createRoot is only called once
@@ -149,11 +194,15 @@ if (!container._reactRootContainer) {
 }
 
 root.render(
+<<<<<<< HEAD
     <AuthProvider>
         <PaymentProvider>
             <RouterProvider router={appRoute} />
         </PaymentProvider>
     </AuthProvider>
+=======
+    <RouterProvider router={appRoute} />
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
 );
 export default AppLayOut;
 

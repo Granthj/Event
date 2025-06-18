@@ -4,7 +4,11 @@ import { AuthContext } from '../utils/authContext';
 import '../css/profile.css';
 import EmailChange from './EmailChange';
 const Profile = () => {
+<<<<<<< HEAD
     const setAuth = useContext(AuthContext);
+=======
+    const { token, customerId } = useContext(AuthContext);
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -34,7 +38,11 @@ const Profile = () => {
         const getData = {
             query: `
             query{
+<<<<<<< HEAD
             customerData(customerId:"${setAuth.CustomerId}"){
+=======
+            customerData(customerId:"${customerId}"){
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                 firstname
                 lastname
                 dob
@@ -49,9 +57,14 @@ const Profile = () => {
             body: JSON.stringify(getData),
             headers: {
                 'Content-Type': 'application/json',
+<<<<<<< HEAD
                 // 'Authorization': "Bearer" + " " + token
             },
             credentials: 'include'
+=======
+                'Authorization': "Bearer" + " " + token
+            }
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         }).then(response => {
             return response.json();
         }).then(data => {
@@ -64,7 +77,11 @@ const Profile = () => {
                 gender: data.data.customerData.gender || '',
                 email: data.data.customerData.email || ''
             }));
+<<<<<<< HEAD
             // console.log(data.data.customerData, "HELLO");
+=======
+            console.log(data.data.customerData, "HELLO");
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         })
 
     }, [])
@@ -140,7 +157,11 @@ const Profile = () => {
         const updateData = {
             query: `
             mutation{
+<<<<<<< HEAD
                 updateCustomerData(updateCustomerInput:{customerId:"${setAuth.CustomerId}",
+=======
+                updateCustomerData(updateCustomerInput:{customerId:"${customerId}",
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                 firstname:"${formData.firstname}",
                 lastname:"${formData.lastname}",
                 dob:"${formData.dob}",
@@ -162,9 +183,14 @@ const Profile = () => {
             body: JSON.stringify(updateData),
             headers: {
                 'Content-Type': 'application/json',
+<<<<<<< HEAD
                 // 'Authorization': "Bearer" + " " + token
             },
             credentials: 'include'
+=======
+                'Authorization': "Bearer" + " " + token
+            }
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         })
             .then(response => {
                 return response.json();

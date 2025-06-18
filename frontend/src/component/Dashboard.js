@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 import react, { useRef, useState, useContext, useEffect } from 'react';
 import Modal from './Modals';
 import { AuthContext } from '../utils/authContext';
 import { useNavigate } from 'react-router-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+=======
+import react, { useRef, useState , useContext,useEffect} from 'react';
+import Modal from './Modals';
+import {AuthContext} from '../utils/authContext';
+import { useNavigate } from 'react-router-dom';
+import { BrowserRouter,Routes,Route } from 'react-router-dom';
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
 import AdminEventList from './AdminEventList';
 
 const Dashboard = () => {
@@ -14,17 +22,24 @@ const Dashboard = () => {
     const [city, setCity] = useState();
     const [State, set_State] = useState();
     const [address, setAddress] = useState();
+<<<<<<< HEAD
     const [image,setImage] = useState();
     const [imageUrl,setImageUrl] = useState(null);
     const [value, setValue] = useState();
     const [bool, setBool] = useState(false);
     const [is, isSet] = useState(false);
+=======
+    const [value,setValue] = useState();
+    const [bool,setBool] = useState(false);
+    const [is,isSet] = useState(false);
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     function setModalHandler() {
         setState(true);
     }
     function closeHandler() {
         setState(false);
     }
+<<<<<<< HEAD
     const Upload = async ()=>{
         const formData = new FormData();
         formData.append('file',image)
@@ -47,12 +62,20 @@ const Dashboard = () => {
             console.log('HELOO FROM RETURN')
             return;
         }
+=======
+    const valueConfirmHandler = (e) => {
+        e.preventDefault();
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         let event = { title, price, date, desc };
         setState(false);
         const requestBody = {
             query: `
             mutation{
+<<<<<<< HEAD
                 createEvent(eventInput:{title:"${title}",price:${price},desc:"${desc}",date:"${date}",city:"${city}",state:"${State}",address:"${address}",image:"${imageUrl}"}){
+=======
+                createEvent(eventInput:{title:"${title}",price:${price},desc:"${desc}",date:"${date}",city:"${city}",state:"${State}",address:"${address}"}){
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                     title
                     price
                     desc
@@ -122,9 +145,15 @@ const Dashboard = () => {
     // }
     return (
         <>
+<<<<<<< HEAD
             <h1>HELLO</h1>
             {state && <Modal close closeModal={closeHandler} confirm={valueConfirmHandler} >
                 <form encType="multipart/form-data">
+=======
+        <h1>HELLO</h1>
+            {state && <Modal close closeModal={closeHandler} confirm={valueConfirmHandler}>
+                <form >
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                     <label htmlFor='title'>Title</label>
                     <input className="form-control" type="text" onChange={(e) => { setTitle(e.target.value) }}></input>
                     <br></br>
@@ -145,10 +174,13 @@ const Dashboard = () => {
                     <br></br>
                     <label htmlFor='description'>Description</label>
                     <textarea className="form-control" type="text" onChange={(e) => setDesc(e.target.value)}></textarea>
+<<<<<<< HEAD
                     <br></br>
                     <label htmlFor='image'>Image</label>
                     <input className="form-control" type="file" onChange={(e) => setImage(e.target.files[0])} />
                     <button type="button" onClick={Upload}>upload</button>
+=======
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                 </form>
             </Modal>}
             {<button className='btn btn-primary' onClick={setModalHandler}>Create Event</button>}

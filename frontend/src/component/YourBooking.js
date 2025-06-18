@@ -1,12 +1,21 @@
 import { useState, useContext, useEffect } from "react";
+<<<<<<< HEAD
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTicketAlt, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { AuthContext } from '../utils/authContext';
+=======
+import { AuthContext } from '../utils/authContext';
+
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
 import ModalCancel from './ModalCancelBooking';
 import '../css/yourBookings.css';
 
 const YourBooking = () => {
+<<<<<<< HEAD
     const setAuth = useContext(AuthContext);
+=======
+    const { token, customerId } = useContext(AuthContext);
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     const [cancel, Cancelbooking] = useState(false);
     const [state, setState] = useState(false);
     const [newState, setNewState] = useState();
@@ -27,16 +36,23 @@ const YourBooking = () => {
     let query = {
         query: `
         query{
+<<<<<<< HEAD
            customerBooking(customerId:"${setAuth.CustomerId}"){
+=======
+           customerBooking(customerId:"${customerId}"){
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             _id
             title
             price
             desc
             date
+<<<<<<< HEAD
             image
             city
             state
             address
+=======
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             bookingId
             createdAt
            }
@@ -44,7 +60,11 @@ const YourBooking = () => {
         `
     }
     const confirm = () => {
+<<<<<<< HEAD
         // console.log("HIII", bookingID)
+=======
+        console.log("HIII", bookingID)
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         let queryDelete = {
             query: `
             mutation{
@@ -58,9 +78,14 @@ const YourBooking = () => {
             body: JSON.stringify(queryDelete),
             headers: {
                 'Content-Type': 'application/json',
+<<<<<<< HEAD
                 // 'Authorization': "Bearer" + " " + token
             },
             credentials: 'include'
+=======
+                'Authorization': "Bearer" + " " + token
+            }
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
         }).then(response => {
             return response.json();
 
@@ -70,19 +95,32 @@ const YourBooking = () => {
         })
     }
     useEffect(() => {
+<<<<<<< HEAD
         if (setAuth.CustomerId && setAuth.Email) {
+=======
+        if (token) {
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             fetch('http://localhost:7000/graphql', {
                 method: 'POST',
                 body: JSON.stringify(query),
                 headers: {
                     'Content-Type': 'application/json',
+<<<<<<< HEAD
                     // 'Authorization': "Bearer" + " " + token
                 },
                 credentials: 'include'
+=======
+                    'Authorization': "Bearer" + " " + token
+                }
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
             }).then(response => {
                 return response.json()
             }).then(data => {
                 if (data) {
+<<<<<<< HEAD
+=======
+                    console.log(data.data.customerBooking, "GFYTFYTF")
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                     setState(true);
                     customerBookingData(data.data.customerBooking);
                     setBoolState(true);
@@ -92,6 +130,7 @@ const YourBooking = () => {
         }
     }, [boolUpdate])
     const CustomerBooking = bookingData.map((val) => (
+<<<<<<< HEAD
         <div key={val._id} className="d-flex justify-content-center">
             <div className="card mb-4 shadow-sm" style={{ width: '550px' }}>
                 <div className="row g-0">
@@ -132,20 +171,66 @@ const YourBooking = () => {
                                 </p>
                                 <div className="d-flex gap-2 mt-3">
                                     <button
+=======
+        <div key={val._id} className="card mb-4 w-100 shadow-sm" style={{ width: '100%' }}>
+            <div className="row g-0">
+                {/* Image on the left - takes 4 columns on md screens and up, full width on smaller screens */}
+                <div className="col-md-4 p-3 d-flex align-items-center justify-content-center bg-light">
+                    <img
+                        src="https://cdn.pixabay.com/photo/2016/11/29/09/08/cart-1867780_1280.png"
+                        alt={val.title}
+                        className="img-fluid rounded"
+                        style={{ maxHeight: '200px', objectFit: 'contain' }}
+                    />
+                </div>
+
+                {/* Content on the right - takes 8 columns on md screens and up */}
+                <div className="col-md-8">
+                    <div className="card-body h-100 d-flex flex-column">
+                        <h5 className="card-title">{val.title}</h5>
+                        <p className="card-text text-muted">{val.desc}</p>
+
+                        <div className="mt-auto">
+                            <p className="card-text fs-5">
+                                <strong>Price:</strong> ${val.price}
+                            </p>
+                            <p className="card-text">
+                                <small className="text-muted">
+                                    Date of event: {new Date(Number(val.date)).toLocaleDateString()}
+                                </small>
+                            </p>
+                            <p className="card-text">
+                                <small className="text-muted">
+                                    Date of booking: {new Date(Number(val.createdAt)).toLocaleDateString()}
+                                </small>
+                            </p>
+                            <div className="d-flex gap-2 mt-3">
+                                 <button
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                                         className="btn btn-outline-dark btn-sm px-3 py-0"
                                         onClick={() => cancelBooking(val.bookingId)}
                                     >
                                         Cancel Booking
                                     </button>
+<<<<<<< HEAD
                                 </div>
+=======
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
 
         </div>
 
+=======
+        </div>
+
+
+
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     ));
 
     return (
@@ -155,7 +240,11 @@ const YourBooking = () => {
 
 
             <div className="container py-5">
+<<<<<<< HEAD
                 {cancel && <ModalCancel confirmCancel={confirm} closeCancel={Close} show={close}></ModalCancel>}
+=======
+            {cancel && <ModalCancel confirmCancel={confirm} closeCancel={Close} show={close}></ModalCancel>}
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
                 <h2 className="text-center mb-4">Your Bookings</h2>
                 <div className="row justify-content-center">
                     <div className="col-lg-8">

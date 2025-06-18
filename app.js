@@ -1,19 +1,27 @@
 const express = require('express');
 const mongoose = require('mongoose');
+<<<<<<< HEAD
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+=======
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
 const fs = require('fs');
 const Event = require('./model/Event.js')
 const User = require('./model/User.js');
 const nodemailer = require('nodemailer');
+<<<<<<< HEAD
 const cloudinary = require('cloudinary').v2;
 const axios = require('axios');
 const multer = require('multer');
+=======
+const axios = require('axios');
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
 const authorization = require('./utils/authorization.js')
 const { graphqlHTTP } = require('express-graphql');
 const Schema = require('./graphql/schema/index.js');
 const Resolver = require('./graphql/resolver/index.js');
 const cities = require('./graphql/data_utils/cities.json'); // Assuming you have a file with city data
+<<<<<<< HEAD
 require('dotenv').config();
 cloudinary.config({ 
     cloud_name: process.env.CLOUD_NAME, 
@@ -70,6 +78,29 @@ app.use('/graphql', graphqlHTTP((req,res)=>({
 })));
 app.get('/api/search-cities', async (req, res) => {
 
+=======
+
+const app = express();
+app.use(authorization);
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Method', 'POST,GET,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+})
+
+app.use('/graphql', graphqlHTTP({
+    schema: Schema,
+    rootValue: Resolver,
+    graphiql: true
+}));
+app.get('/api/search-cities', async (req, res) => {
+
+>>>>>>> 582eafcfd1d70d483a7b9d52e8fb5034bd4ae280
     const { query } = req.query; 
    
     try {  
